@@ -1,0 +1,4 @@
+lst = ['HistoricalReservationID', 'OrderNumber', 'Agency', 'OrgID', 'CodeHierarchy', 'RegionCode', 'RegionDescription', 'ParentLocationID', 'ParentLocation', 'LegacyFacilityID', 'Park', 'SiteType', 'UseType', 'ProductID', 'EntityType', 'EntityID', 'FacilityID', 'FacilityZIP', 'FacilityState', 'FacilityLongitude', 'FacilityLatitude', 'CustomerZIP', 'CustomerState', 'CustomerCountry', 'Tax', 'UseFee', 'TranFee', 'AttrFee', 'TotalBeforeTax', 'TotalPaid', 'StartDate', 'EndDate', 'OrderDate', 'NumberOfPeople', 'Tent', 'Popup', 'Trailer', 'RVMotorhome', 'Boat', 'HorseTrailer', 'Car', 'FifthWheel', 'Van', 'CanoeKayak', 'BoatTrailer', 'Motorcycle', 'Truck', 'Bus', 'Bicycle', 'Snowmobile', 'OffRoadlAllTerrainVehicle', 'PowerBoat', 'PickupCamper', 'LargeTentOver9x12', 'SmallTent', 'Marinaboat', 'LatLongPoint']
+
+for work in lst:
+    print(work)
