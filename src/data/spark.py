@@ -1,4 +1,5 @@
 import pyspark as ps
+from pyspark.sql.types import *
 import datetime
 import os
 from zipcoords import zipcode_to_coords
@@ -34,23 +35,22 @@ class Data(object):
 
     def __init__(self, filename):
         self.filename = filename
-        self.raw = spark.read.csv(filename, header=True)
+        self.raw = spark.read.csv(filename, header=True, inferSchema=True)
         self.temp_df = self.raw.createOrReplaceTempView('temp')
     
     def select_columns(self):
         self.selected_columns = spark.sql('''
                                     SELECT
-                                        OrderNumber,
-                                        UseType,
-                                        FacilityID,
-                                        FacilityZIP,
+                                        STRING(OrderNumber),
+                                        STRING(UseType),
+                                        INT(FacilityID),
                                         FacilityLongitude,
                                         FacilityLatitude,
                                         CustomerZIP,
                                         TotalPaid,
                                         StartDate,
                                         EndDate,
-                                        NumberOfPeople,
+                                        INT(NumberOfPeople),
                                         Tent,
                                         Popup,
                                         Trailer,
@@ -69,17 +69,23 @@ class Data(object):
                                         temp
                                     ''')
         self.temp_df = self.selected_columns.createOrReplaceTempView('temp')
-        #return self.selected_columns
     
-    def make_cleaned_coords(self):
+    # Not used.
+    # Found 0 instances where ZIP but not coords
+    def check_facility_zips(self):
         self.coords = spark.sql('''
                                 SELECT
                                     OrderNumber
                                 FROM
                                     temp
                                 WHERE
-                                    FacilityZIP > 0
+                                    FacilityZIP IS NOT NULL AND
+                                    FacilityLongitude is NULL
                                 ''')
+        self.temp_df = self.coords.createOrReplaceTempView('temp')
+
+    def make_customer_coords(self):
+        # withColumn...
         self.temp_df = self.coords.createOrReplaceTempView('temp')
 
     def remove_nulls(self):
@@ -100,9 +106,9 @@ class Data(object):
     def write_to_csv(self):
         pass
     
-    # Use this to create & return a spark.df
+    # Use this to create & return a spark.df from the temp
     # For spark methods outside of this class
-    def df(self):
+    def to_df(self):
         result = spark.sql('''
                         SELECT
                             *
@@ -112,13 +118,18 @@ class Data(object):
         return result
 
 if __name__ == '__main__':
-    data = Data(rawpath + 'reservations_rec_gov/2006.csv')
-    #data.selected_columns()
+    data = Data(rawpath + 'reservations_rec_gov/2008.csv')
+    data.select_columns()
+    print(data.to_df().count())
     data.make_cleaned_coords()
-    data.df().show(10)
+    print(data.to_df().count())
+    #data.make_cleaned_coords()
+    #data.selected_columns()
+    #data.select_columns()
+    data.to_df().show(10)
     #data = data.make_cleaned_coords
     #data.make_cleaned_coords()
-    #data.show(10)
+    #data.to_df().show(10)
     #print(data.count())
-    #data.printSchema()
+    #data.to_df().printSchema()
     
