@@ -52,92 +52,71 @@ class Data(object):
         return result      
 
     def select_columns(self):
-        self.selected_columns = spark.sql('''
-                                    SELECT
-                                        STRING(OrderNumber),
-                                        STRING(UseType),
-                                        INT(FacilityID),
-                                        FacilityLongitude,
-                                        FacilityLatitude,
-                                        CustomerZIP,
-                                        TotalPaid,
-                                        StartDate,
-                                        EndDate,
-                                        INT(NumberOfPeople),
-                                        Tent,
-                                        Popup,
-                                        Trailer,
-                                        RVMotorhome,
-                                        Boat,
-                                        Car,
-                                        FifthWheel,
-                                        Van,
-                                        CanoeKayak,
-                                        BoatTrailer,
-                                        PowerBoat,
-                                        PickupCamper,
-                                        LargeTentOver9x12,
-                                        SmallTent
-                                    FROM
-                                        temp
-                                    ''')
-        self.selected_columns.createOrReplaceTempView('temp')
+        result = spark.sql('''
+                            SELECT
+                                STRING(OrderNumber),
+                                STRING(UseType),
+                                INT(FacilityID),
+                                FacilityLongitude,
+                                FacilityLatitude,
+                                CustomerZIP,
+                                TotalPaid,
+                                StartDate,
+                                EndDate,
+                                INT(NumberOfPeople),
+                                INT(Tent),
+                                INT(Popup),
+                                INT(Trailer),
+                                INT(RVMotorhome),
+                                INT(Boat),
+                                INT(Car),
+                                INT(FifthWheel),
+                                INT(Van),
+                                INT(CanoeKayak),
+                                INT(BoatTrailer),
+                                INT(PowerBoat),
+                                INT(PickupCamper),
+                                INT(LargeTentOver9x12),
+                                INT(SmallTent)
+                            FROM
+                                temp
+                            ''')
+        result.createOrReplaceTempView('temp')
         self.current = self.to_df()
 
-    
-    # Not used.
-    # Found 0 instances where ZIP but not coords
-    def check_facility_zips(self):
-        self.coords = spark.sql('''
-                                SELECT
-                                    OrderNumber
-                                FROM
-                                    temp
-                                WHERE
-                                    FacilityZIP IS NOT NULL AND
-                                    FacilityLongitude is NULL
-                                ''')
-        self.coords.createOrReplaceTempView('temp')
-        self.current = self.to_df()
 
     def make_customer_coords(self):
         # need to deal with long zipcodes...
-        result = self.current.withColumn('CustomerLatitude', get_lat_udf(self.current['CustomerZIP']))\
-                    .withColumn('CustomerLongitude', get_lng_udf(self.current['CustomerZIP']))
+        result = self.current.withColumn('CustomerLatitude',
+                        get_lat_udf(self.current['CustomerZIP']))\
+                    .withColumn('CustomerLongitude',
+                        get_lng_udf(self.current['CustomerZIP']))
         result.createOrReplaceTempView('temp')
-        self.current = result
+        self.current = self.to_df
 
     def remove_nulls(self):
-        self.current.dropna(how = 'any', subset = ['OrderNumber', 'FacilityID', 
+        result = self.current.dropna(how = 'any', subset = ['OrderNumber', 'FacilityID', 
             'FacilityLongitude', 'FacilityLatitude', 'CustomerZIP', 'StartDate',
             'EndDate'])
+        result.createOrReplaceTempView('temp')
+        self.current = self.to_df()
 
-    def make_datetimes(self):
-        pass
-    
-    def make_ids_integers(self):
-        pass
+    def clean(self):
+        self.select_columns()
+        self.remove_nulls()
+        self.make_customer_coords()        
 
     def combine(self):
         pass
-
-    def clean(self):
-        pass        
 
     def write_to_csv(self):
         pass
 
 if __name__ == '__main__':
     data = Data(rawpath + 'reservations_rec_gov/2006.csv')
-    data.select_columns()
     print(data.to_df().count())
-    data.make_customer_coords()
-    #data.selected_columns()
-    #data.select_columns()
-    data.current.show(10)
-    #data = data.make_cleaned_coords
-    #data.make_cleaned_coords()
-    #data.to_df().show(10)
-    #print(data.count())
-    #data.to_df().printSchema()
+    data.clean()
+    print(data.to_df().count())
+    data.to_df().show(10)
+    data.to_df().printSchema()
     
