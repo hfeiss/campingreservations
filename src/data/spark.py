@@ -14,7 +14,8 @@ spark = (ps.sql.SparkSession.builder
         .getOrCreate()
         )
 sc = spark.sparkContext
-sc.setLogLevel('ERROR')
+
+# Function for mapping coordinants if none exist.
 
 
 class Data(object):
@@ -34,10 +35,10 @@ class Data(object):
     def __init__(self, filename):
         self.filename = filename
         self.raw = spark.read.csv(filename, header=True)
-        self.temp = self.raw.createOrReplaceTempView('temp')
+        self.temp_df = self.raw.createOrReplaceTempView('temp')
     
     def select_columns(self):
-        self.columns = spark.sql(f'''
+        self.selected_columns = spark.sql('''
                                     SELECT
                                         OrderNumber,
                                         UseType,
@@ -67,11 +68,19 @@ class Data(object):
                                     FROM
                                         temp
                                     ''')
-        return self.columns
+        self.temp_df = self.selected_columns.createOrReplaceTempView('temp')
+        #return self.selected_columns
     
     def make_cleaned_coords(self):
-        # if we don't have coords and do have zip
-        pass
+        self.coords = spark.sql('''
+                                SELECT
+                                    OrderNumber
+                                FROM
+                                    temp
+                                WHERE
+                                    FacilityZIP > 0
+                                ''')
+        self.temp_df = self.coords.createOrReplaceTempView('temp')
 
     def remove_nulls(self):
         pass
@@ -90,7 +99,26 @@ class Data(object):
 
     def write_to_csv(self):
         pass
+    
+    # Use this to create & return a spark.df
+    # For spark methods outside of this class
+    def df(self):
+        result = spark.sql('''
+                        SELECT
+                            *
+                        FROM
+                            temp
+                        ''')        
+        return result
 
 if __name__ == '__main__':
-    #data = Data(rawpath + 'reservations_rec_gov/2006.csv').select_columns()
+    data = Data(rawpath + 'reservations_rec_gov/2006.csv')
+    #data.selected_columns()
+    data.make_cleaned_coords()
+    data.df().show(10)
+    #data = data.make_cleaned_coords
+    #data.make_cleaned_coords()
+    #data.show(10)
+    #print(data.count())
     #data.printSchema()
+    
