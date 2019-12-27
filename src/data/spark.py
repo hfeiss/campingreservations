@@ -1,8 +1,9 @@
 import pyspark as ps
 from pyspark.sql.types import *
+from pyspark.sql.functions import udf
 import datetime
 import os
-from zipcoords import zipcode_to_coords
+from zipcoords import get_lat, get_lng
 
 srcpath = os.path.split(os.path.abspath(''))[0]
 rootpath = os.path.split(srcpath)[0]
@@ -16,8 +17,8 @@ spark = (ps.sql.SparkSession.builder
         )
 sc = spark.sparkContext
 
-# Function for mapping coordinants if none exist.
-
+get_lat_udf = udf(get_lat, FloatType())
+get_lng_udf = udf(get_lng, FloatType())
 
 class Data(object):
     """
@@ -36,8 +37,20 @@ class Data(object):
     def __init__(self, filename):
         self.filename = filename
         self.raw = spark.read.csv(filename, header=True, inferSchema=True)
-        self.temp_df = self.raw.createOrReplaceTempView('temp')
-    
+        self.raw.createOrReplaceTempView('temp')
+        self.current = self.to_df()
+
+    # Use this to create & return a spark.df from the temp
+    # For spark methods outside of this class
+    def to_df(self):
+        result = spark.sql('''
+                        SELECT
+                            *
+                        FROM
+                            temp
+                        ''')        
+        return result      
+
     def select_columns(self):
         self.selected_columns = spark.sql('''
                                     SELECT
@@ -68,7 +81,9 @@ class Data(object):
                                     FROM
                                         temp
                                     ''')
-        self.temp_df = self.selected_columns.createOrReplaceTempView('temp')
+        self.selected_columns.createOrReplaceTempView('temp')
+        self.current = self.to_df()
+
     
     # Not used.
     # Found 0 instances where ZIP but not coords
@@ -82,14 +97,20 @@ class Data(object):
                                     FacilityZIP IS NOT NULL AND
                                     FacilityLongitude is NULL
                                 ''')
-        self.temp_df = self.coords.createOrReplaceTempView('temp')
+        self.coords.createOrReplaceTempView('temp')
+        self.current = self.to_df()
 
     def make_customer_coords(self):
-        # withColumn...
-        self.temp_df = self.coords.createOrReplaceTempView('temp')
+        # need to deal with long zipcodes...
+        result = self.current.withColumn('CustomerLatitude', get_lat_udf(self.current['CustomerZIP']))\
+                    .withColumn('CustomerLongitude', get_lng_udf(self.current['CustomerZIP']))
+        result.createOrReplaceTempView('temp')
+        self.current = result
 
     def remove_nulls(self):
-        pass
+        self.current.dropna(how = 'any', subset = ['OrderNumber', 'FacilityID', 
+            'FacilityLongitude', 'FacilityLatitude', 'CustomerZIP', 'StartDate',
+            'EndDate'])
 
     def make_datetimes(self):
         pass
@@ -105,28 +126,15 @@ class Data(object):
 
     def write_to_csv(self):
         pass
-    
-    # Use this to create & return a spark.df from the temp
-    # For spark methods outside of this class
-    def to_df(self):
-        result = spark.sql('''
-                        SELECT
-                            *
-                        FROM
-                            temp
-                        ''')        
-        return result
 
 if __name__ == '__main__':
-    data = Data(rawpath + 'reservations_rec_gov/2008.csv')
+    data = Data(rawpath + 'reservations_rec_gov/2006.csv')
     data.select_columns()
     print(data.to_df().count())
-    data.make_cleaned_coords()
-    print(data.to_df().count())
-    #data.make_cleaned_coords()
+    data.make_customer_coords()
     #data.selected_columns()
     #data.select_columns()
-    data.to_df().show(10)
+    data.current.show(10)
     #data = data.make_cleaned_coords
     #data.make_cleaned_coords()
     #data.to_df().show(10)
