@@ -1,6 +1,6 @@
 import pyspark as ps
 from pyspark.sql.types import *
-from pyspark.sql.functions import udf
+from pyspark.sql.functions import *
 import datetime
 import os
 from zipcoords import get_lat, get_lng
@@ -21,8 +21,7 @@ sc = spark.sparkContext
 
 get_lat_udf = udf(get_lat, FloatType())
 get_lng_udf = udf(get_lng, FloatType())
-get_len_udf = udf(lambda row: row['EndDate']
-                            - row['StartDate'])
+get_len_udf = udf()
 
 class Data(object):
     """
@@ -89,15 +88,38 @@ class Data(object):
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
-    def remove_nulls(self):
+    def remove_data_nulls(self):
         result = self.df.dropna(how = 'any', subset = 
-            ['OrderNumber',
-            'FacilityID', 
-            'FacilityLongitude',
-            'FacilityLatitude',
-            'CustomerZIP',
-            'StartDate',
-            'EndDate'])
+            [
+                'OrderNumber',
+                'FacilityID', 
+                'FacilityLongitude',
+                'FacilityLatitude',
+                'CustomerZIP',
+                'StartDate',
+                'EndDate'
+            ])
+        result.createOrReplaceTempView('temp')
+        self.df = self.to_df()
+
+    def remove_category_nulls(self):
+        result = self.df.dropna(how = 'all', subset=
+            [
+                'Tent',
+                'Popup',
+                'Trailer',
+                'RVMotorhome',
+                'Boat',
+                'Car',
+                'FifthWheel',
+                'Van',
+                'CanoeKayak',
+                'BoatTrailer',
+                'PowerBoat',
+                'PickupCamper',
+                'LargeTentOver9x12',
+                'SmallTent'
+            ])
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
@@ -114,14 +136,18 @@ class Data(object):
         self.df = self.to_df()
 
     def make_LengthOfStay(self):
-        result = self.df.withColumn('LengthOfStay',
-                    get_len_udf(self.df))
+        result = self.df.selectExpr('*',
+                            ''' 
+                            DATEDIFF(EndDate, StartDate) 
+                            as LengthOfStay
+                            ''')
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
     def clean(self):
         self.select_columns()
-        self.remove_nulls()
+        self.remove_data_nulls()
+        self.remove_category_nulls()
         self.make_CustomerLatitude()
         self.make_CustomerLongitude()     
         self.make_LengthOfStay()   
