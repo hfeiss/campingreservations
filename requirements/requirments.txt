@@ -1,4 +1,7 @@
 docker container:
+boto3
+    create ~/.aws/configure
 pandas
 matplotlib
 uszipcode 
+git

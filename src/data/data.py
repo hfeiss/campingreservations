@@ -1,4 +1,6 @@
 import pyspark as ps
+from pyspark.sql.types import FloatType
+from pyspark.sql.functions import udf
 from zipcoords import get_lat, get_lng
 from functools import reduce
 import os
@@ -18,7 +20,7 @@ spark = (ps.sql.SparkSession.builder
 sc = spark.sparkContext
 sc.setLogLevel('ERROR')
 
-# Define UDFs for lat and long fromm zip codes
+# Define UDFs for lat and long from zip codes
 get_lat_udf = udf(get_lat, FloatType())
 get_lng_udf = udf(get_lng, FloatType())
 
@@ -26,13 +28,15 @@ class Data(object):
     """
     Input
     File name / path to .csv (string)
+    
+    Init
+    Creates a spark dataframe from the csv
 
-    Actions
-    Init creates a spark dataframe from csv
-    Selects wanted columns
-    Cleans data
-    Adds wanted columns
-    Writes a cleaned .csv
+    Possible Actions
+    Select wanted columns
+    Clean data
+    Add wanted columns
+    Write spark df to .csv
     """
 
     def __init__(self, filename):
@@ -43,9 +47,9 @@ class Data(object):
         self.raw.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
-    # Use this to create & return a spark.df from the temp
-    # For spark methods outside of this class
     def to_df(self):
+        # Create & return a spark.df from the temp
+        # For using spark methods on data objects
         return spark.sql('''
                         SELECT
                             *
@@ -169,5 +173,6 @@ if __name__ == '__main__':
     data2007.clean()
     print(f'Post clean: {data2007.to_df().count()}')
 
-    data0607 = combine(data2006.df, data2007.df)
+    lst = [data2006.df, data2007.df]
+    data0607 = combine(*lst)
     print(f'Post combi: {data0607.count()}')
