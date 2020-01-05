@@ -1,9 +1,7 @@
 import pyspark as ps
-from pyspark.sql.types import *
-from pyspark.sql.functions import *
-import datetime
-import os
 from zipcoords import get_lat, get_lng
+from functools import reduce
+import os
 
 # Create filepaths within df directory
 srcpath = os.path.split(os.path.abspath(''))[0]
@@ -18,10 +16,11 @@ spark = (ps.sql.SparkSession.builder
         .getOrCreate()
         )
 sc = spark.sparkContext
+sc.setLogLevel('ERROR')
 
+# Define UDFs for lat and long fromm zip codes
 get_lat_udf = udf(get_lat, FloatType())
 get_lng_udf = udf(get_lng, FloatType())
-get_len_udf = udf()
 
 class Data(object):
     """
@@ -29,11 +28,10 @@ class Data(object):
     File name / path to .csv (string)
 
     Actions
-    Creates a spark dataframe
+    Init creates a spark dataframe from csv
     Selects wanted columns
-    Performs tasks such as cleaning
-
-    Output
+    Cleans data
+    Adds wanted columns
     Writes a cleaned .csv
     """
 
@@ -150,20 +148,26 @@ class Data(object):
         self.remove_category_nulls()
         self.make_CustomerLatitude()
         self.make_CustomerLongitude()     
-        self.make_LengthOfStay()   
-        
+        self.make_LengthOfStay()        
 
-    def combine(self):
+    def write_to_csv(self, name):
         pass
 
-    def write_to_csv(self):
-        pass
+def combine(*dfs):
+    # combines all dataframes
+    # returns new spark dataframe
+    return reduce(ps.sql.DataFrame.union, dfs)
 
 if __name__ == '__main__':
-    data = Data(rawpath + 'reservations_rec_gov/2006.csv')
-    print(data.to_df().count())
-    data.clean()
-    print(data.to_df().count())
-    data.to_df().show(10)
-    data.to_df().printSchema()
+    data2006 = Data(rawpath + 'reservations_rec_gov/2006.csv')
+    print(f'Pre  clean: {data2006.to_df().count()}')
+    data2006.clean()
+    print(f'Post clean: {data2006.to_df().count()}')
     
+    data2007 = Data(rawpath + 'reservations_rec_gov/2007.csv')
+    print(f'Pre  clean: {data2007.to_df().count()}')
+    data2007.clean()
+    print(f'Post clean: {data2007.to_df().count()}')
+
+    data0607 = combine(data2006.df, data2007.df)
+    print(f'Post combi: {data0607.count()}')
