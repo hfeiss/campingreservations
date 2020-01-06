@@ -94,8 +94,7 @@ class Data(object):
 
     def remove_data_nulls(self):
         result = self.df.dropna(how = 'any', subset = 
-            [
-                'OrderNumber',
+            [   'OrderNumber',
                 'FacilityID', 
                 'FacilityLongitude',
                 'FacilityLatitude',
@@ -108,8 +107,7 @@ class Data(object):
 
     def remove_category_nulls(self):
         result = self.df.dropna(how = 'all', subset=
-            [
-                'Tent',
+            [   'Tent',
                 'Popup',
                 'Trailer',
                 'RVMotorhome',
@@ -178,6 +176,16 @@ class Data(object):
         self.make_DistanceTraveled()
         self.cleaned = self.df
 
+    def get_distint_nights(self):
+        result = spark.sql('''
+                    SELECT
+                        COUNT(DISTINCT LengthOfStay)
+                    FROM
+                        temp
+                    ''')
+        result.createOrReplaceTempView('temp')
+        self.df = self.to_df()
+        
 #move combine to new script??
 def combine(*dfs):
     # combines all dataframes
@@ -192,10 +200,13 @@ if __name__ == '__main__':
     #data2006.write_to_csv(cleanpath + '/2006.csv')
     data2006.to_df().printSchema()
     data2006.to_df().show()
-    data2007 = Data(rawpath + '/reservations_rec_gov/2007.csv')
-    print(f'Pre  clean: {data2007.to_df().count()}')
-    data2007.clean()
-    print(f'Post clean: {data2007.to_df().count()}')
+    data2006.get_distint_nights()
+    data2006.to_df().show()
+
+    #data2007 = Data(rawpath + '/reservations_rec_gov/2007.csv')
+    #print(f'Pre  clean: {data2007.to_df().count()}')
+    #data2007.clean()
+    #print(f'Post clean: {data2007.to_df().count()}')
     
     #lst = [data2006.df, data2007.df]
     #data0607 = combine(*lst)
