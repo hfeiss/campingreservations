@@ -8,8 +8,9 @@ import os
 # Create filepaths within df directory
 srcpath = os.path.split(os.path.abspath(''))[0]
 rootpath = os.path.split(srcpath)[0]
-datapath = os.path.join(rootpath, 'data/')
-rawpath = os.path.join(datapath, 'raw/')
+datapath = os.path.join(rootpath, 'data')
+rawpath = os.path.join(datapath, 'raw')
+cleanpath = os.path.join(datapath, 'cleaned')
 
 # Start a spark session
 spark = (ps.sql.SparkSession.builder 
@@ -146,6 +147,17 @@ class Data(object):
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
+    def write_to_csv(self, path):
+        '''
+        Input
+        spark df
+        name (string)
+
+        Output
+        csv
+        '''
+        self.to_df().select('*').toPandas().to_csv(path)
+
     def clean(self):
         self.select_columns()
         self.remove_data_nulls()
@@ -154,25 +166,24 @@ class Data(object):
         self.make_CustomerLongitude()     
         self.make_LengthOfStay()        
 
-    def write_to_csv(self, name):
-        pass
-
+#move combine to new script??
 def combine(*dfs):
     # combines all dataframes
     # returns new spark dataframe
     return reduce(ps.sql.DataFrame.union, dfs)
 
 if __name__ == '__main__':
-    data2006 = Data(rawpath + 'reservations_rec_gov/2006.csv')
+    data2006 = Data(rawpath + '/reservations_rec_gov/2006.csv')
     print(f'Pre  clean: {data2006.to_df().count()}')
     data2006.clean()
     print(f'Post clean: {data2006.to_df().count()}')
+    data2006.write_to_csv(cleanpath + '/2006.csv')
     
-    data2007 = Data(rawpath + 'reservations_rec_gov/2007.csv')
+    data2007 = Data(rawpath + '/reservations_rec_gov/2007.csv')
     print(f'Pre  clean: {data2007.to_df().count()}')
     data2007.clean()
     print(f'Post clean: {data2007.to_df().count()}')
-
+    
     lst = [data2006.df, data2007.df]
     data0607 = combine(*lst)
     print(f'Post combi: {data0607.count()}')

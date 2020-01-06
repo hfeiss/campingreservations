@@ -1,6 +1,11 @@
 docker container:
-boto3
-    create ~/.aws/configure
+#boto3
+    docker exec -it -u 0 sparkbook bash
+    wget "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip awscli-exe-linux-x86_64.zip
+    sudo ./aws/install
+    aws2 --version
+    aws2 configure
 pandas
 matplotlib
 uszipcode 

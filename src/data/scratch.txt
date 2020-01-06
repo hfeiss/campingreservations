@@ -1,8 +1,5 @@
 lst = ['HistoricalReservationID', 'OrderNumber', 'Agency', 'OrgID', 'CodeHierarchy', 'RegionCode', 'RegionDescription', 'ParentLocationID', 'ParentLocation', 'LegacyFacilityID', 'Park', 'SiteType', 'UseType', 'ProductID', 'EntityType', 'EntityID', 'FacilityID', 'FacilityZIP', 'FacilityState', 'FacilityLongitude', 'FacilityLatitude', 'CustomerZIP', 'CustomerState', 'CustomerCountry', 'Tax', 'UseFee', 'TranFee', 'AttrFee', 'TotalBeforeTax', 'TotalPaid', 'StartDate', 'EndDate', 'OrderDate', 'NumberOfPeople', 'Tent', 'Popup', 'Trailer', 'RVMotorhome', 'Boat', 'HorseTrailer', 'Car', 'FifthWheel', 'Van', 'CanoeKayak', 'BoatTrailer', 'Motorcycle', 'Truck', 'Bus', 'Bicycle', 'Snowmobile', 'OffRoadlAllTerrainVehicle', 'PowerBoat', 'PickupCamper', 'LargeTentOver9x12', 'SmallTent', 'Marinaboat', 'LatLongPoint']
 
-for work in lst:
-    print(work)
-
 HistoricalReservationID
 OrderNumber
 Agency
@@ -114,9 +111,4 @@ sch = StructType([StructField('OrderNumber', StringType(), True),
                     StructField('LargeTentOver9x12', BooleanType(), True),
                     StructField('SmallTent', BooleanType(), True)])
 
-
-    def make_LengthOfStay(self):
-        result = self.current.withColumn('LengthOfStay',
-                self.current['EndDate'] - self.current['StartDate'])
-        result.createOrReplaceTempView('temp')
-        self.current = self.to_df()
+pass in paramaters?
