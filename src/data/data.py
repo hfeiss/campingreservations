@@ -1,7 +1,7 @@
 import pyspark as ps
 from pyspark.sql.types import FloatType
 from pyspark.sql.functions import udf
-from zipcoords import get_lat, get_lng
+from distance import get_lat, get_lng, get_dst
 from functools import reduce
 import os
 
@@ -21,9 +21,10 @@ spark = (ps.sql.SparkSession.builder
 sc = spark.sparkContext
 sc.setLogLevel('ERROR')
 
-# Define UDFs for lat and long from zip codes
+# Define UDFs for calculating distances
 get_lat_udf = udf(get_lat, FloatType())
 get_lng_udf = udf(get_lng, FloatType())
+get_dst_udf = udf(get_dst, FloatType())
 
 class Data(object):
     """
@@ -138,6 +139,15 @@ class Data(object):
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
+    def make_DistanceTraveled(self):
+        result = self.df.withColumn('DistanceTraveled',
+                    get_dst_udf(self.df['FacilityLatitude'],
+                                self.df['FacilityLongitude'],
+                                self.df['CustomerLatitude'],
+                                self.df['CustomerLongitude']))
+        result.createOrReplaceTempView('temp')
+        self.df = self.to_df()
+
     def make_LengthOfStay(self):
         result = self.df.selectExpr('*',
                             ''' 
@@ -161,10 +171,12 @@ class Data(object):
     def clean(self):
         self.select_columns()
         self.remove_data_nulls()
-        self.remove_category_nulls()
+        #self.remove_category_nulls()
+        self.make_LengthOfStay()
         self.make_CustomerLatitude()
-        self.make_CustomerLongitude()     
-        self.make_LengthOfStay()        
+        self.make_CustomerLongitude()
+        self.make_DistanceTraveled()
+        self.cleaned = self.df
 
 #move combine to new script??
 def combine(*dfs):
@@ -177,13 +189,14 @@ if __name__ == '__main__':
     print(f'Pre  clean: {data2006.to_df().count()}')
     data2006.clean()
     print(f'Post clean: {data2006.to_df().count()}')
-    data2006.write_to_csv(cleanpath + '/2006.csv')
-    
+    #data2006.write_to_csv(cleanpath + '/2006.csv')
+    data2006.to_df().printSchema()
+    data2006.to_df().show()
     data2007 = Data(rawpath + '/reservations_rec_gov/2007.csv')
     print(f'Pre  clean: {data2007.to_df().count()}')
     data2007.clean()
     print(f'Post clean: {data2007.to_df().count()}')
     
-    lst = [data2006.df, data2007.df]
-    data0607 = combine(*lst)
-    print(f'Post combi: {data0607.count()}')
+    #lst = [data2006.df, data2007.df]
+    #data0607 = combine(*lst)
+    #print(f'Post combi: {data0607.count()}')
