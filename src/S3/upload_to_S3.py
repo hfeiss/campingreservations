@@ -6,5 +6,5 @@ src_datapath = os.path.join(srcpath, 'data')
 vispath = os.path.join(srcpath, 'visualizations')
 
 if __name__ == '__main__':
-    bashCommand = f'aws2 s3 sync {rootpath} s3://recreationbucket/ --exclude ".git/*" --exclude ".DS_Store" --size-only true'
+    bashCommand = f'aws2 s3 sync {rootpath} s3://recreationbucket/ --exclude "*/.DS_Store" --delete --size-only'
     os.system(bashCommand)
