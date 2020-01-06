@@ -6,6 +6,7 @@ docker container:
     sudo ./aws/install
     aws2 --version
     aws2 configure
+geopy
 pandas
 matplotlib
 uszipcode 
