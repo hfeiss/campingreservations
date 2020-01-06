@@ -14,7 +14,6 @@ def get_lat(zipcode):
     zip_obj = search.by_zipcode(str(zipcode)[0:5])
     zip_dct = zip_obj.to_dict()
     return zip_dct['lat']
- 
 
 def get_lng(zipcode):
     string = str(zipcode)

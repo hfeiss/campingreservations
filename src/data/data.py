@@ -10,16 +10,23 @@ srcpath = os.path.split(os.path.abspath(''))[0]
 rootpath = os.path.split(srcpath)[0]
 datapath = os.path.join(rootpath, 'data')
 rawpath = os.path.join(datapath, 'raw')
-cleanpath = os.path.join(datapath, 'cleaned')
+respath = os.path.join(rawpath, 'reservations_rec_gov/')
+cleanpath = os.path.join(datapath, 'cleaned/')
 
 # Start a spark session
+conf = ps.SparkConf()
+conf.set('spark.cores.max', 6)
+conf.set('spark.executor.memory', '10g')
+conf.set('spark.executor.cores', '6')
+conf.set('spark.driver.memory','10g')
 spark = (ps.sql.SparkSession.builder 
         .master("local") 
         .appName("Capstone I")
+        .config(conf=conf)
         .getOrCreate()
         )
 sc = spark.sparkContext
-sc.setLogLevel('ERROR')
+print(sc._conf.getAll())
 
 # Define UDFs for calculating distances
 get_lat_udf = udf(get_lat, FloatType())
@@ -155,7 +162,7 @@ class Data(object):
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
-    def write_to_csv(self, path):
+    def write_to_pkl(self, path):
         '''
         Input
         spark df
@@ -164,7 +171,7 @@ class Data(object):
         Output
         csv
         '''
-        self.to_df().select('*').toPandas().to_csv(path)
+        self.df.select('*').toPandas().to_pickle(path)
 
     def clean(self):
         self.select_columns()
@@ -176,12 +183,17 @@ class Data(object):
         self.make_DistanceTraveled()
         self.cleaned = self.df
 
-    def get_distint_nights(self):
+    def make_AvgDistanceByStay(self):
         result = spark.sql('''
                     SELECT
-                        COUNT(DISTINCT LengthOfStay)
+                        LengthOfStay,
+                        AVG(DistanceTraveled)
                     FROM
                         temp
+                    GROUP BY
+                        LengthOfStay
+                    ORDER BY
+                        LengthOfStay
                     ''')
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
@@ -193,21 +205,24 @@ def combine(*dfs):
     return reduce(ps.sql.DataFrame.union, dfs)
 
 if __name__ == '__main__':
-    data2006 = Data(rawpath + '/reservations_rec_gov/2006.csv')
-    print(f'Pre  clean: {data2006.to_df().count()}')
-    data2006.clean()
-    print(f'Post clean: {data2006.to_df().count()}')
-    #data2006.write_to_csv(cleanpath + '/2006.csv')
-    data2006.to_df().printSchema()
-    data2006.to_df().show()
-    data2006.get_distint_nights()
-    data2006.to_df().show()
+    list_res = []
+    for root, dirs, file in os.walk(respath):
+        list_res.extend(file)
 
-    #data2007 = Data(rawpath + '/reservations_rec_gov/2007.csv')
-    #print(f'Pre  clean: {data2007.to_df().count()}')
-    #data2007.clean()
-    #print(f'Post clean: {data2007.to_df().count()}')
+    for year in list_res:
+        df = Data(respath + year)
+        print(f'{str(year)} pre:  {df.to_df().count()}')
+        df.clean()
+        print(f'{str(year)} post: {df.to_df().count()}')
+        df.make_AvgDistanceByStay()
+        df.to_df().show
+        df.write_to_pkl(cleanpath
+                        + 'DistByStay/'
+                        + year[:-4] 
+                        + '.pkl')
     
+    '''
     #lst = [data2006.df, data2007.df]
     #data0607 = combine(*lst)
     #print(f'Post combi: {data0607.count()}')
+    '''
