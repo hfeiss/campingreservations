@@ -18,6 +18,9 @@ Combine all years into one. Get total info from them.
     Join
     Analize
 
+We're just going to focus on 2018 from now on.
+
+Lenght of stay got off: throw out values > 16
 
 # This
 

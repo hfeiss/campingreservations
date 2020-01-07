@@ -15,18 +15,18 @@ cleanpath = os.path.join(datapath, 'cleaned/')
 
 # Start a spark session
 conf = ps.SparkConf()
-conf.set('spark.cores.max', 6)
+conf.set('spark.cores.max', '6')
 conf.set('spark.executor.memory', '10g')
 conf.set('spark.executor.cores', '6')
 conf.set('spark.driver.memory','10g')
+conf.set('spark.sql.shuffle.partitions', '100')
 spark = (ps.sql.SparkSession.builder 
-        .master("local") 
+        .master("local[*]") 
         .appName("Capstone I")
         .config(conf=conf)
         .getOrCreate()
         )
 sc = spark.sparkContext
-print(sc._conf.getAll())
 
 # Define UDFs for calculating distances
 get_lat_udf = udf(get_lat, FloatType())
@@ -160,6 +160,15 @@ class Data(object):
                             as LengthOfStay
                             ''')
         result.createOrReplaceTempView('temp')
+        result = spark.sql('''
+                    SELECT
+                        *
+                    FROM
+                        temp
+                    WHERE
+                        LengthOfStay < 17
+                    ''')
+        result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
     def write_to_pkl(self, path):
@@ -183,11 +192,12 @@ class Data(object):
         self.make_DistanceTraveled()
         self.cleaned = self.df
 
-    def make_AvgDistanceByStay(self):
+    def make_DistanceByStay(self):
         result = spark.sql('''
                     SELECT
                         LengthOfStay,
                         AVG(DistanceTraveled)
+                        STDEV(DistanceTraveled)
                     FROM
                         temp
                     GROUP BY
@@ -197,7 +207,54 @@ class Data(object):
                     ''')
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
-        
+
+    def make_CountsOfNights(self):
+        result = spark.sql('''
+                    SELECT
+                        LengthOfStay,
+                        COUNT(LengthOfStay)
+                    FROM
+                        temp
+                    GROUP BY
+                        LengthOfStay
+                    ORDER BY
+                        LengthOfStay
+                    ''')
+        result.createOrReplaceTempView('temp')
+        self.df = self.to_df()
+    
+    def make_SumOfCategories(self):
+        result = spark.sql('''
+                    SELECT
+                        SUM(Tent),
+                        SUM(Popup),
+                        SUM(Trailer),
+                        SUM(RVMotorhome),
+                        SUM(Boat),
+                        SUM(HorseTrailer),
+                        SUM(Car),
+                        SUM(FifthWheel),
+                        SUM(Van),
+                        SUM(CanoeKayak),
+                        SUM(BoatTrailer),
+                        SUM(Motorcycle),
+                        SUM(Truck),
+                        SUM(Bus),
+                        SUM(Bicycle),
+                        SUM(Snowmobile),
+                        SUM(OffRoadlAllTerrainVehicle),
+                        SUM(PowerBoat),
+                        SUM(PickupCamper),
+                        SUM(LargeTentOver9x12),
+                        SUM(SmallTent)
+                    FROM
+                        temp
+                        ''')
+        result.createOrReplaceTempView('temp')
+        self.df = self.to_df()            
+
+
+
 #move combine to new script??
 def combine(*dfs):
     # combines all dataframes
@@ -208,19 +265,36 @@ if __name__ == '__main__':
     list_res = []
     for root, dirs, file in os.walk(respath):
         list_res.extend(file)
-
+    '''
     for year in list_res:
         df = Data(respath + year)
         print(f'{str(year)} pre:  {df.to_df().count()}')
         df.clean()
         print(f'{str(year)} post: {df.to_df().count()}')
-        df.make_AvgDistanceByStay()
-        df.to_df().show
+        df.make_CountsOfNights()
+        df.write_to_pkl(cleanpath
+                        + 'CountsOfNights/'
+                        + year[:-4] 
+                        + '.pkl')
+    '''
+    for year in list_res:
+        df = Data(respath + year)
+        df.clean()
+        df.make_SumOfCategories()
+        df.write_to_pkl(cleanpath
+                        + 'SumOfCategories/'
+                        + year[:-4] 
+                        + '.pkl')
+
+    for year in list_res:
+        df = Data(respath + year)
+        df.clean()
+        df.make_DistanceByStay()
         df.write_to_pkl(cleanpath
                         + 'DistByStay/'
                         + year[:-4] 
                         + '.pkl')
-    
+
     '''
     #lst = [data2006.df, data2007.df]
     #data0607 = combine(*lst)
