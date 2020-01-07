@@ -265,6 +265,7 @@ if __name__ == '__main__':
     list_res = []
     for root, dirs, file in os.walk(respath):
         list_res.extend(file)
+    list_res.sort()
     '''
     for year in list_res:
         df = Data(respath + year)
@@ -286,6 +287,7 @@ if __name__ == '__main__':
                         + year[:-4] 
                         + '.pkl')
 
+    '''
     for year in list_res:
         df = Data(respath + year)
         df.clean()
@@ -294,7 +296,7 @@ if __name__ == '__main__':
                         + 'DistByStay/'
                         + year[:-4] 
                         + '.pkl')
-
+    '''
     '''
     #lst = [data2006.df, data2007.df]
     #data0607 = combine(*lst)
