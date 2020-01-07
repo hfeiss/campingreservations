@@ -270,6 +270,8 @@ if __name__ == '__main__':
                         + 'CountsOfNights/'
                         + year[:-4] 
                         + '.pkl')
+        print(f'Wrote {str(year[:-4])}')
+
     '''
     for year in list_res:
         df = Data(respath + year)
@@ -279,6 +281,7 @@ if __name__ == '__main__':
                         + 'SumOfCategories/'
                         + year[:-4] 
                         + '.pkl')
+        print(f'Wrote {str(year[:-4])}')
 
     '''
     for year in list_res:
@@ -289,6 +292,8 @@ if __name__ == '__main__':
                         + 'DistByStay/'
                         + year[:-4] 
                         + '.pkl')
+        print(f'Wrote {str(year[:-4])}')
+
     '''
     '''
     #lst = [data2006.df, data2007.df]
