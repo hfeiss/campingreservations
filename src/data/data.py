@@ -192,18 +192,46 @@ class Data(object):
         self.make_DistanceTraveled()
         self.cleaned = self.df
 
-    def make_DistanceByStay(self):
+    def make_DistanceByWeekend(self):
         result = spark.sql('''
                     SELECT
-                        LengthOfStay,
+                        *
+                    FROM
+                        temp
+                    WHERE
+                        LengthOfStay < 3
+                    ''')
+        result.createOrReplaceTempView('temp')
+        result = spark.sql('''
+                    SELECT
                         AVG(DistanceTraveled),
+                        MAX(DistanceTraveled),
+                        MIN(DistanceTraveled),
                         STDDEV(DistanceTraveled) AS StddevDist
                     FROM
                         temp
-                    GROUP BY
-                        LengthOfStay
-                    ORDER BY
-                        LengthOfStay
+                    ''')
+        result.createOrReplaceTempView('temp')
+        self.df = self.to_df()
+
+    def make_DistanceByLonger(self):
+        result = spark.sql('''
+                    SELECT
+                        *
+                    FROM
+                        temp
+                    WHERE
+                        LengthOfStay > 2
+                    ''')
+        result.createOrReplaceTempView('temp')
+        result = spark.sql('''
+                    SELECT
+                        AVG(DistanceTraveled),
+                        MAX(DistanceTraveled),
+                        MIN(DistanceTraveled),
+                        STDDEV(DistanceTraveled) AS StddevDist
+                    FROM
+                        temp
                     ''')
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
@@ -284,12 +312,23 @@ if __name__ == '__main__':
                         + '.pkl')
         print(f'Wrote {str(year[:-4])}')
     '''
+    
     for year in list_res:
         df = Data(respath + year)
         df.clean()
-        df.make_DistanceByStay()
+        df.make_DistanceByWeekend()
         df.write_to_pkl(cleanpath
-                        + 'DistByStay/'
+                        + 'DistanceByWeekend/'
+                        + year[:-4] 
+                        + '.pkl')
+        print(f'Wrote {str(year[:-4])}')
+
+    for year in list_res:
+        df = Data(respath + year)
+        df.clean()
+        df.make_DistanceByLonger()
+        df.write_to_pkl(cleanpath
+                        + 'DistanceByLonger/'
                         + year[:-4] 
                         + '.pkl')
         print(f'Wrote {str(year[:-4])}')
