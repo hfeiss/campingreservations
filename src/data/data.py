@@ -1,6 +1,6 @@
 import pyspark as ps
 from pyspark.sql.types import FloatType
-from pyspark.sql.functions import udf
+from pyspark.sql.functions import udf, stddev
 from distance import get_lat, get_lng, get_dst
 from functools import reduce
 import os
@@ -196,8 +196,8 @@ class Data(object):
         result = spark.sql('''
                     SELECT
                         LengthOfStay,
-                        AVG(DistanceTraveled)
-                        STDEV(DistanceTraveled)
+                        AVG(DistanceTraveled),
+                        STDDEV(DistanceTraveled) AS StddevDist
                     FROM
                         temp
                     GROUP BY
@@ -273,6 +273,7 @@ if __name__ == '__main__':
         print(f'Wrote {str(year[:-4])}')
 
     '''
+    '''
     for year in list_res:
         df = Data(respath + year)
         df.clean()
@@ -282,7 +283,6 @@ if __name__ == '__main__':
                         + year[:-4] 
                         + '.pkl')
         print(f'Wrote {str(year[:-4])}')
-
     '''
     for year in list_res:
         df = Data(respath + year)
@@ -293,8 +293,8 @@ if __name__ == '__main__':
                         + year[:-4] 
                         + '.pkl')
         print(f'Wrote {str(year[:-4])}')
+    
 
-    '''
     '''
     #lst = [data2006.df, data2007.df]
     #data0607 = combine(*lst)
