@@ -27,7 +27,25 @@ for file in list_years:
 data = data.groupby('LengthOfStay').sum().reset_index()
 data = data[data['LengthOfStay'] > 0]
 data.reset_index(inplace = True, drop = True)
-print(data.columns)
+
+#plt.style.use('ggplot')
+
+plt.figure(figsize=(12, 8))    
+ax = plt.subplot(111)    
+
+plt.yticks(range(0, 7000001, 1000000), [str(x) + " Million" for x in range(0, 8)], fontsize=14)    
+plt.xticks(fontsize=14)
+
+ax.spines["top"].set_visible(False)    
+ax.spines["bottom"].set_visible(False)    
+ax.spines["right"].set_visible(False)    
+ax.spines["left"].set_visible(False) 
+
+plt.ylim(-200000, 7000000)    
+plt.xlim(-.25, 16)
+plt.xlabel('Number of Nights', fontsize = 14)
+plt.title('Number of Reservations by Length of Stay', fontsize = 20)
 
 plt.bar(data['LengthOfStay'], data['count(LengthOfStay)'])
+plt.tight_layout()
 plt.savefig(imagepath + '/histOfNights.png')

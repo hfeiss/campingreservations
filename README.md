@@ -1,6 +1,12 @@
 # Background
 
 # Methods
+AWS EC2
+Pyspark / SQL
+PKL
+pandas
+matplotlib
+geopandas
 
 # EDA
 Get lat and long and zip, where lat is null get coords from zip, else del

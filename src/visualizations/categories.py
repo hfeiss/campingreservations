@@ -66,6 +66,7 @@ for i in range(len(tableau20)):
     r, g, b = tableau20[i]    
     tableau20[i] = (r / 255., g / 255., b / 255.)
 
+#plt.style.use('ggplot')
 plt.figure(figsize=(12, 8))    
 
 ax = plt.subplot(111)    

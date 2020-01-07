@@ -67,10 +67,10 @@ class Data(object):
                         STRING(OrderNumber),
                         STRING(UseType),
                         INT(FacilityID),
-                        STRING(FacilityZIP),
+                        INT(FacilityZIP),
                         FacilityLongitude,
                         FacilityLatitude,
-                        STRING(CustomerZIP),
+                        INT(CustomerZIP),
                         CustomerState,
                         TotalPaid,
                         StartDate,
@@ -271,13 +271,13 @@ class Data(object):
     def make_DistanceByCustomerZIP(self):
         result = spark.sql('''
                     SELECT
-                        SUBSTRING('CustomerZIP', 1, 5)
+                        SUBSTRING(CustomerZIP, 1, 5)
                         AS CustomerZIP,
                         DistanceTraveled
                     FROM
                         temp
                     ''')
-        result.makeOrReplaceTempView('temp')
+        result.createOrReplaceTempView('temp')
         result = spark.sql('''
                     SELECT
                         CustomerZIP,
@@ -287,19 +287,19 @@ class Data(object):
                     GROUP BY
                         CustomerZIP
                     ''')
-        result.makeOrReplaceTempView('temp')
+        result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
     def make_DistanceByFacilityZIP(self):
         result = spark.sql('''
                     SELECT
-                        SUBSTRING('FacilityZIP', 1, 5)
+                        SUBSTRING(FacilityZIP, 1, 5)
                         AS CustomerZIP,
                         DistanceTraveled
                     FROM
                         temp
                     ''')
-        result.makeOrReplaceTempView('temp')
+        result.createOrReplaceTempView('temp')
         result = spark.sql('''
                     SELECT
                         CustomerZIP,
@@ -309,5 +309,5 @@ class Data(object):
                     GROUP BY
                         CustomerZIP
                     ''')
-        result.makeOrReplaceTempView('temp')
+        result.createOrReplaceTempView('temp')
         self.df = self.to_df()

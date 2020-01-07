@@ -10,12 +10,6 @@ datapath = os.path.join(rootpath, 'data/')
 cleanpath = os.path.join(datapath, 'cleaned/')
 imagepath = os.path.join(rootpath, 'images/')
 
-'''
-plt.bar(df2006['LengthOfStay'], df2006['avg(DistanceTraveled)'])
-plt.tight_layout()
-plt.savefig('this.png')
-'''
-
 df = pd.read_pickle(cleanpath + 'DistanceByCustomerZip/2006.pkl')
 
 print(df)

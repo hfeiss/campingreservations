@@ -40,7 +40,7 @@ if __name__ == '__main__':
                         + '.pkl')
         print(f'Wrote {str(year[:-4])}')
     '''
-    
+    '''
     for year in list_res:
         df = Data(respath + year)
         df.clean()
@@ -60,8 +60,27 @@ if __name__ == '__main__':
                         + year[:-4] 
                         + 'NoAK.pkl')
         print(f'Wrote {str(year[:-4])}')
-    
-
+    '''    
+    for year in list_res:
+        df = Data(respath + year)
+        df.clean()
+        df.make_DistanceByCustomerZIP()
+        df.write_to_pkl(cleanpath
+                        + 'DistanceByCustomerZip/'
+                        + year[:-4] 
+                        + '.pkl')
+        print(f'Wrote {str(year[:-4])}')
+    '''
+    for year in list_res:
+        df = Data(respath + year)
+        df.clean()
+        df.make_DistanceByFacilityZIP()
+        df.write_to_pkl(cleanpath
+                        + 'DistanceByFacilityZip/'
+                        + year[:-4] 
+                        + '.pkl')
+        print(f'Wrote {str(year[:-4])}')
+    '''
     '''
     #lst = [data2006.df, data2007.df]
     #data0607 = combine(*lst)
