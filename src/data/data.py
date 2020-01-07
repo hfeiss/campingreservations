@@ -1,6 +1,6 @@
 import pyspark as ps
 from pyspark.sql.types import FloatType
-from pyspark.sql.functions import udf, stddev
+from pyspark.sql.functions import udf, stddev, substring
 from distance import get_lat, get_lng, get_dst
 from functools import reduce
 import os
@@ -28,11 +28,6 @@ spark = (ps.sql.SparkSession.builder
         )
 sc = spark.sparkContext
 
-# Define UDFs for calculating distances
-get_lat_udf = udf(get_lat, FloatType())
-get_lng_udf = udf(get_lng, FloatType())
-get_dst_udf = udf(get_dst, FloatType())
-
 class Data(object):
     """
     Input
@@ -56,6 +51,16 @@ class Data(object):
         self.raw.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
+    def clean(self):
+        self.select_columns()
+        self.remove_data_nulls()
+        #self.remove_category_nulls()
+        self.make_LengthOfStay()
+        self.make_CustomerLatitude()
+        self.make_CustomerLongitude()
+        self.make_DistanceTraveled()
+        self.cleaned = self.df
+
     def to_df(self):
         # Create & return a spark.df from the temp
         # For using spark methods on data objects
@@ -72,9 +77,11 @@ class Data(object):
                         STRING(OrderNumber),
                         STRING(UseType),
                         INT(FacilityID),
+                        STRING(FacilityZIP),
                         FacilityLongitude,
                         FacilityLatitude,
-                        CustomerZIP,
+                        STRING(CustomerZIP),
+                        CustomerState,
                         TotalPaid,
                         StartDate,
                         EndDate,
@@ -106,6 +113,7 @@ class Data(object):
                 'FacilityLongitude',
                 'FacilityLatitude',
                 'CustomerZIP',
+                'CustomerState',
                 'StartDate',
                 'EndDate'
             ])
@@ -133,18 +141,21 @@ class Data(object):
         self.df = self.to_df()
 
     def make_CustomerLatitude(self):
+        get_lat_udf = udf(get_lat, FloatType())
         result = self.df.withColumn('CustomerLatitude',
                     get_lat_udf(self.df['CustomerZIP']))
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
     def make_CustomerLongitude(self):
+        get_lng_udf = udf(get_lng, FloatType())
         result = self.df.withColumn('CustomerLongitude',
                     get_lng_udf(self.df['CustomerZIP']))
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
     def make_DistanceTraveled(self):
+        get_dst_udf = udf(get_dst, FloatType())
         result = self.df.withColumn('DistanceTraveled',
                     get_dst_udf(self.df['FacilityLatitude'],
                                 self.df['FacilityLongitude'],
@@ -182,16 +193,6 @@ class Data(object):
         '''
         self.df.select('*').toPandas().to_pickle(path)
 
-    def clean(self):
-        self.select_columns()
-        self.remove_data_nulls()
-        #self.remove_category_nulls()
-        self.make_LengthOfStay()
-        self.make_CustomerLatitude()
-        self.make_CustomerLongitude()
-        self.make_DistanceTraveled()
-        self.cleaned = self.df
-
     def make_DistanceByWeekend(self):
         result = spark.sql('''
                     SELECT
@@ -199,7 +200,8 @@ class Data(object):
                     FROM
                         temp
                     WHERE
-                        LengthOfStay < 3
+                        LengthOfStay < 3 AND
+                        CustomerState != 'AK'
                     ''')
         result.createOrReplaceTempView('temp')
         result = spark.sql('''
@@ -221,7 +223,9 @@ class Data(object):
                     FROM
                         temp
                     WHERE
-                        LengthOfStay > 2
+                        LengthOfStay > 2 AND
+                        CustomerState != 'AK'
+
                     ''')
         result.createOrReplaceTempView('temp')
         result = spark.sql('''
@@ -274,7 +278,49 @@ class Data(object):
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()            
 
+    def make_DistanceByCustomerZIP(self):
+        result = spark.sql('''
+                    SELECT
+                        SUBSTRING('CustomerZIP', 1, 5)
+                        AS CustomerZIP,
+                        DistanceTraveled
+                    FROM
+                        temp
+                    ''')
+        result.makeOrReplaceTempView('temp')
+        result = spark.sql('''
+                    SELECT
+                        CustomerZIP,
+                        AVG(DistanceTraveled)
+                    FROM
+                        temp
+                    GROUP BY
+                        CustomerZIP
+                    ''')
+        result.makeOrReplaceTempView('temp')
+        self.df = self.to_df()
 
+    def make_DistanceByFacilityZIP(self):
+        result = spark.sql('''
+                    SELECT
+                        SUBSTRING('FacilityZIP', 1, 5)
+                        AS CustomerZIP,
+                        DistanceTraveled
+                    FROM
+                        temp
+                    ''')
+        result.makeOrReplaceTempView('temp')
+        result = spark.sql('''
+                    SELECT
+                        CustomerZIP,
+                        AVG(DistanceTraveled)
+                    FROM
+                        temp
+                    GROUP BY
+                        CustomerZIP
+                    ''')
+        result.makeOrReplaceTempView('temp')
+        self.df = self.to_df()         
 
 #move combine to new script??
 def combine(*dfs):
@@ -320,7 +366,7 @@ if __name__ == '__main__':
         df.write_to_pkl(cleanpath
                         + 'DistanceByWeekend/'
                         + year[:-4] 
-                        + '.pkl')
+                        + 'NoAK.pkl')
         print(f'Wrote {str(year[:-4])}')
 
     for year in list_res:
@@ -330,7 +376,7 @@ if __name__ == '__main__':
         df.write_to_pkl(cleanpath
                         + 'DistanceByLonger/'
                         + year[:-4] 
-                        + '.pkl')
+                        + 'NoAK.pkl')
         print(f'Wrote {str(year[:-4])}')
     
 
