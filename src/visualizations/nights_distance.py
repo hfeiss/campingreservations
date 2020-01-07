@@ -11,7 +11,7 @@ rawpath = os.path.join(datapath, 'raw')
 respath = os.path.join(rawpath, 'reservations_rec_gov/')
 cleanpath = os.path.join(datapath, 'cleaned/')
 
-df2006 = pd.read_pickle(cleanpath + 'CountsOfNights/2018.pkl')
+df2006 = pd.read_pickle(cleanpath + 'SumOfCategories/2006.pkl')
 print(df2006)
 
 '''

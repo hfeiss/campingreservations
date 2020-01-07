@@ -226,27 +226,20 @@ class Data(object):
     def make_SumOfCategories(self):
         result = spark.sql('''
                     SELECT
-                        SUM(Tent),
-                        SUM(Popup),
-                        SUM(Trailer),
-                        SUM(RVMotorhome),
-                        SUM(Boat),
-                        SUM(HorseTrailer),
-                        SUM(Car),
-                        SUM(FifthWheel),
-                        SUM(Van),
-                        SUM(CanoeKayak),
-                        SUM(BoatTrailer),
-                        SUM(Motorcycle),
-                        SUM(Truck),
-                        SUM(Bus),
-                        SUM(Bicycle),
-                        SUM(Snowmobile),
-                        SUM(OffRoadlAllTerrainVehicle),
-                        SUM(PowerBoat),
-                        SUM(PickupCamper),
-                        SUM(LargeTentOver9x12),
-                        SUM(SmallTent)
+                        SUM(Tent) AS Tent,
+                        SUM(Popup) AS Popup,
+                        SUM(Trailer) AS Trailer,
+                        SUM(RVMotorhome) AS RVMotorhome,
+                        SUM(Boat) AS Boat,
+                        SUM(Car) AS Car,
+                        SUM(FifthWheel) AS FifthWheel,
+                        SUM(Van) AS Van,
+                        SUM(CanoeKayak) AS CanoeKayak,
+                        SUM(BoatTrailer) AS BoatTrailer,
+                        SUM(PowerBoat) AS PowerBoat,
+                        SUM(PickupCamper) AS PickupCamper,
+                        SUM(LargeTentOver9x12) AS LargeTentOver9x12,
+                        SUM(SmallTent) AS SmallTent
                     FROM
                         temp
                         ''')
