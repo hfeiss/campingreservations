@@ -15,6 +15,7 @@ for root, dirs, file in os.walk(cleanpath + 'SumOfCategories/'):
     list_years.extend(file)
 list_years.sort()
 
+# Create and clean dataframe from list of .pkl s
 data = pd.DataFrame()
 for file in list_years:
     time = file[:-4]
@@ -55,6 +56,7 @@ for file in list_years:
 
 data.reset_index(inplace = True)
 
+# make the plot
 tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (44, 160, 44),  
              (148, 103, 189), (197, 176, 213), (140, 86, 75), (196, 156, 148),    
              (227, 119, 194), (247, 182, 210), (127, 127, 127), (199, 199, 199),    
