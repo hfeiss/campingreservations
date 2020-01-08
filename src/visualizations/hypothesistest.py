@@ -28,7 +28,7 @@ ax.spines["left"].set_visible(False)
 plt.xlabel('Miles Traveled', fontsize = 14)
 plt.title('Probability', fontsize = 20)
 
-x = np.linspace
+x = np.linspace(200, 800, 1000)
 
 weekend = 
 
