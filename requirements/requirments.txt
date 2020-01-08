@@ -46,6 +46,7 @@ AWS CLI:
 pip packages:
     geopy
     uszipcode
+    folium
 
 mkdir capstone
     aws2 s3 sync s3://recreationbucket .

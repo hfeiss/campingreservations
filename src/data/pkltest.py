@@ -10,6 +10,5 @@ datapath = os.path.join(rootpath, 'data/')
 cleanpath = os.path.join(datapath, 'cleaned/')
 imagepath = os.path.join(rootpath, 'images/')
 
-df = pd.read_pickle(cleanpath + 'DistanceByCustomerZip/2006.pkl')
-
+df = pd.read_pickle(cleanpath + 'DistanceByFacilityState/2010.pkl')
 print(df)

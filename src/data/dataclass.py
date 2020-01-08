@@ -341,7 +341,6 @@ class Data(object):
         self.folder = 'DistanceByCustomerState/'
         self.df = self.to_df()
 
-
     def make_DistanceByFacilityState(self):
         result = spark.sql('''
                     SELECT
