@@ -41,6 +41,16 @@ class Data(object):
         self.raw.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
+    def to_df(self):
+        # Creates & return a spark.df from the temp
+        # For using spark methods on Data objects
+        return spark.sql('''
+                        SELECT
+                            *
+                        FROM
+                            temp
+                        ''') 
+
     def clean(self):
         self.select_columns()
         self.remove_data_nulls()
@@ -49,17 +59,7 @@ class Data(object):
         self.make_CustomerLatitude()
         self.make_CustomerLongitude()
         self.make_DistanceTraveled()
-        self.cleaned = self.df
-
-    def to_df(self):
-        # Create & return a spark.df from the temp
-        # For using spark methods on data objects
-        return spark.sql('''
-                        SELECT
-                            *
-                        FROM
-                            temp
-                        ''')    
+        self.cleaned = self.df   
 
     def select_columns(self):
         result = spark.sql('''

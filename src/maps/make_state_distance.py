@@ -1,7 +1,6 @@
 import pandas as pd
 import folium
 import os
-import imgkit
 
 # Create filepaths within df directory
 srcpath = os.path.split(os.path.abspath(''))[0]
@@ -10,34 +9,45 @@ datapath = os.path.join(rootpath, 'data/')
 cleanpath = os.path.join(datapath, 'cleaned/')
 imagepath = os.path.join(rootpath, 'images/')
 
-distance = pd.read_pickle(cleanpath + 'DistanceByCustomerState/2010.pkl')
 states = pd.read_csv('states.csv')
-
-distance = distance[distance['CustomerState'].isin(states['States'])]
-distance.reset_index(inplace = True, drop = True)
-distance.sort_values('CustomerState', inplace = True)
-
 url = 'https://raw.githubusercontent.com/python-visualization/folium/master/examples/data'
 state_geo = f'{url}/us-states.json'
-state_unemployment = f'{url}/US_Unemployment_Oct2012.csv'
-state_data = pd.read_csv(state_unemployment)
 
-m = folium.Map(location=[48, -102], zoom_start=3)
+def make_maps(sourcepath, years=None):
+    list_years = []
+    if years:
+        list_years = years
+    else:
+        for root, dirs, file in os.walk(sourcepath):
+            list_years.extend(file)
+    list_years.sort()
 
-folium.Choropleth(
-    geo_data=state_geo,
-    name='choropleth',
-    data=distance,
-    columns=['CustomerState', 'avg(DistanceTraveled)'],
-    key_on='feature.id',
-    fill_color='YlGn',
-    fill_opacity=0.7,
-    line_opacity=0.2,
-    legend_name='Distance Traveled (miles)'
-).add_to(m)
+    for year in list_years:
+        distance = pd.read_pickle(sourcepath + year)
+        print(f'Wrote {str(year[:-4])}')
 
-folium.LayerControl().add_to(m)
+        distance = distance[distance['CustomerState'].isin(states['States'])]
+        distance.reset_index(inplace = True, drop = True)
+        distance.sort_values('CustomerState', inplace = True)
 
-m.save('index.html')
+        m = folium.Map(location=[48, -102], zoom_start=3)
 
-imgkit.from_file('index.html', 'index.jpg')
+        folium.Choropleth(
+            geo_data=state_geo,
+            name='choropleth',
+            data=distance,
+            columns=['CustomerState', 'avg(DistanceTraveled)'],
+            key_on='feature.id',
+            fill_color='YlGn',
+            fill_opacity=0.7,
+            line_opacity=0.2,
+            legend_name='Distance Traveled (miles)'
+        ).add_to(m)
+
+        folium.LayerControl().add_to(m)
+
+        m.save(f'{imagepath}maphtmls/{str(year[:-4])}.html')
+
+if __name__ == '__main__':
+    
+    make_maps(cleanpath + 'DistanceByCustomerState/')

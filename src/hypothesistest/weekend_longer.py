@@ -32,11 +32,11 @@ class WeekendLonger(object):
     def __init__(self):
 
         self.weekend_avg = np.average(weekend_avgs)
-        self.weekend_std = np.std(weekend_avgs)
+        self.weekend_std = np.std(weekend_avgs) * np.sqrt(len(weekend_avgs))
         
         self.longer_avg = np.average(longer_avgs)
-        self.longer_std = np.std(longer_avgs)
-        
+        self.longer_std = np.std(longer_avgs) *  np.sqrt(len(longer_avgs))
+
 if __name__ == '__main__':
 
     info = WeekendLonger()

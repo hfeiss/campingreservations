@@ -10,6 +10,19 @@ respath = os.path.join(rawpath, 'reservations_rec_gov/')
 cleanpath = os.path.join(datapath, 'cleaned/')
 
 def make_pkls(sourcepath, operation, years = None):
+    '''
+    Input
+    sourcepath: path to a directory containing .csv files
+    operation: Data.method
+    years: (optional) defaults to all files in sourcepath
+
+    Actions
+    Creates a Data object
+    Performs Data.operation on each file
+    
+    Output
+    Saves a .plk in at .folder of the operation in cleanpath
+    '''
     if years:
         list_res = years
     else:
@@ -28,8 +41,11 @@ def make_pkls(sourcepath, operation, years = None):
         print(f'Wrote {str(year[:-4])} in {df.folder}')
 
 if __name__ == '__main__':
-
-    # This is about 72 hours of computation for all years
+    '''
+    +++++++++++++++++++++++++++++++++++++++++++++++++++
+    This is about 80 hours of computation for all years
+    +++++++++++++++++++++++++++++++++++++++++++++++++++
+    '''
     years_left = ['2012.csv', '2013.csv', '2014.csv', '2015.csv', '2016.csv', '2017.csv', '2018.csv']
     make_pkls(respath, Data.make_DistanceByCustomerState, years = years_left)
     #make_pkls(respath, Data.make_DistanceByCustomerZIP)
