@@ -205,6 +205,7 @@ class Data(object):
                         temp
                     ''')
         result.createOrReplaceTempView('temp')
+        self.folder = 'DistanceByWeekend/'
         self.df = self.to_df()
 
     def make_DistanceByLonger(self):
@@ -229,6 +230,7 @@ class Data(object):
                         temp
                     ''')
         result.createOrReplaceTempView('temp')
+        self.folder = 'DistanceByLonger/'
         self.df = self.to_df()
 
     def make_CountsOfNights(self):
@@ -244,6 +246,7 @@ class Data(object):
                         LengthOfStay
                     ''')
         result.createOrReplaceTempView('temp')
+        self.folder = 'CountsOfNights/'
         self.df = self.to_df()
     
     def make_SumOfCategories(self):
@@ -267,6 +270,7 @@ class Data(object):
                         temp
                         ''')
         result.createOrReplaceTempView('temp')
+        self.folder = 'SumOfCategories/'
         self.df = self.to_df()            
 
     def make_DistanceByCustomerZIP(self):
@@ -289,6 +293,7 @@ class Data(object):
                         CustomerZIP
                     ''')
         result.createOrReplaceTempView('temp')
+        self.folder = 'DistanceByCustomerZIP/'
         self.df = self.to_df()
 
     def make_DistanceByFacilityZIP(self):
@@ -311,6 +316,7 @@ class Data(object):
                         FacilityZIP
                     ''')
         result.createOrReplaceTempView('temp')
+        self.folder = 'DistanceByFacilityZIP/'
         self.df = self.to_df()
 
     def make_DistanceByCustomerState(self):
@@ -332,6 +338,7 @@ class Data(object):
                         CustomerState
                     ''')
         result.createOrReplaceTempView('temp')
+        self.folder = 'DistanceByCustomerState/'
         self.df = self.to_df()
 
 
@@ -354,4 +361,5 @@ class Data(object):
                         FacilityState
                     ''')
         result.createOrReplaceTempView('temp')
+        self.folder = 'DistanceByFacilityState/'
         self.df = self.to_df()

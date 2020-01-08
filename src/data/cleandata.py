@@ -1,4 +1,4 @@
-import dataclass
+from dataclass import *
 import os
 
 # Create filepaths within df directory
@@ -9,12 +9,30 @@ rawpath = os.path.join(datapath, 'raw')
 respath = os.path.join(rawpath, 'reservations_rec_gov/')
 cleanpath = os.path.join(datapath, 'cleaned/')
 
+def make_pkls(sourcepath, operation, years = None):
+    if years:
+        list_res = years
+    else:
+        for root, dirs, file in os.walk(sourcepath):
+            list_res.extend(file)
+    list_res.sort()
+
+    for year in list_res:
+        df = Data(sourcepath + year)
+        Data.clean(df)
+        operation(df)
+        df.write_to_pkl(cleanpath
+                        + df.folder
+                        + year[:-4] 
+                        + '.pkl')
+        print(f'Wrote {str(year[:-4])} in {df.folder}')
 
 if __name__ == '__main__':
     list_res = []
     for root, dirs, file in os.walk(respath):
         list_res.extend(file)
     list_res.sort()
+    #make this a function!!!!
     '''
     for year in list_res:
         df = Data(respath + year)
@@ -95,6 +113,9 @@ if __name__ == '__main__':
         print(f'Wrote {str(year[:-4])}')
     '''
     list_res = ['2011.csv', '2012.csv', '2013.csv', '2014.csv', '2015.csv', '2016.csv', '2017.csv', '2018.csv']
+    
+    make_pkls(respath, Data.make_DistanceByCustomerState, list_res)
+    '''
     for year in list_res:
         df = Data(respath + year)
         df.clean()
@@ -104,6 +125,7 @@ if __name__ == '__main__':
                         + year[:-4] 
                         + '.pkl')
         print(f'Wrote {str(year[:-4])}')
+    '''
     '''
     #lst = [data2006.df, data2007.df]
     #data0607 = combine(*lst)
