@@ -111,4 +111,4 @@ for rank, column in enumerate(categories):
     plt.text(2018.15, y_pos, column, fontsize=16, color=tableau20[rank])    
 plt.title('Reservation Type over Time', loc = 'right', fontsize = 20)
 plt.tight_layout()
-plt.savefig(imagepath + 'categories.png')
+plt.savefig(imagepath + 'TypeOverTime.png')

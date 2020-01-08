@@ -48,4 +48,4 @@ plt.title('Number of Reservations by Length of Stay', fontsize = 20)
 
 plt.bar(data['LengthOfStay'], data['count(LengthOfStay)'])
 plt.tight_layout()
-plt.savefig(imagepath + '/histOfNights.png')
+plt.savefig(imagepath + '/HistogramOfNights.png')

@@ -205,7 +205,7 @@ class Data(object):
                         temp
                     ''')
         result.createOrReplaceTempView('temp')
-        self.folder = 'DistanceByWeekend/'
+        self.folder = 'DistanceByWeekend/NoAK'
         self.df = self.to_df()
 
     def make_DistanceByLonger(self):
@@ -230,7 +230,7 @@ class Data(object):
                         temp
                     ''')
         result.createOrReplaceTempView('temp')
-        self.folder = 'DistanceByLonger/'
+        self.folder = 'DistanceByLonger/NoAK'
         self.df = self.to_df()
 
     def make_CountsOfNights(self):
