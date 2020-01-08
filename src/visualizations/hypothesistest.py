@@ -1,11 +1,16 @@
 import sys
 import os
 srcpath = os.path.split(os.path.abspath(''))[0]
+rootpath = os.path.split(srcpath)[0]
+datapath = os.path.join(rootpath, 'data/')
+cleanpath = os.path.join(datapath, 'cleaned/')
+imagepath = os.path.join(rootpath, 'images/')
 hyppath = os.path.join(srcpath, 'hypothesistest/')
 sys.path.append(hyppath)
 from weekend_longer import *
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy.stats as stats
 
 info = WeekendLonger()
 
@@ -14,32 +19,37 @@ info = WeekendLonger()
 plt.figure(figsize=(12, 8))    
 ax = plt.subplot(111)    
 
-plt.xlim(0, 1)    
-plt.xticks(range(200, 800, 100), [str(x) + " Miles" for x in range(200, 800, 100)], fontsize=14)    
+plt.xlim(250, 750)    
+plt.xticks(range(300, 800, 100), [str(x) + " Miles" for x in range(300, 800, 100)], fontsize=14)    
 
-plt.ylim(0, 1)
-plt.yticks(fontsize=14)
+plt.ylim(-0.0005, .03)
+plt.yticks([])
 
 ax.spines["top"].set_visible(False)    
 ax.spines["bottom"].set_visible(False)    
 ax.spines["right"].set_visible(False)    
 ax.spines["left"].set_visible(False) 
 
-plt.xlabel('Miles Traveled', fontsize = 14)
-plt.title('Probability', fontsize = 20)
+plt.tick_params(axis="both", which="both", bottom="off", labelbottom="on")
 
-x = np.linspace(200, 800, 1000)
+#plt.xlabel('Miles Traveled', fontsize = 14)
+plt.title('Probability of Average Distance for a Year', fontsize = 20)
 
-weekend = 
+x = np.linspace(250, 750, 1000)
 
-plt.plot(data['LengthOfStay'], data['count(LengthOfStay)'])
+weekend_dist = stats.norm(loc = info.weekend_avg, scale = info.weekend_std)
+y_weekend = weekend_dist.pdf(x)
+plt.plot(x, y_weekend, label = 'Weekend')
+plt.fill_between(x, 0, y_weekend, alpha = 0.25)
+
+longer_dist = stats.norm(loc = info.longer_avg, scale = info.longer_std)
+y_longer = longer_dist.pdf(x)
+plt.plot(x, y_longer, label = 'Longer')
+plt.fill_between(x, 0, y_longer, alpha = 0.25)
+
+plt.legend(fontsize = 14)
 plt.tight_layout()
-plt.savefig(imagepath + '/HistogramOfNights.png') 
-
-
 
 if __name__ == '__main__':
-    print(info.weekend_avg)
-    print(info.longer_avg)
-    print(info.weekend_std)
-    print(info.longer_std)
+    plt.savefig(imagepath + '/hypothesistest.png') 
+    print(f'P-value of observing this average: {weekend_dist.cdf(info.longer_avg):.3f}')
