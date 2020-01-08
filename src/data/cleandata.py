@@ -61,6 +61,7 @@ if __name__ == '__main__':
                         + 'NoAK.pkl')
         print(f'Wrote {str(year[:-4])}')
     '''    
+    '''
     for year in list_res:
         df = Data(respath + year)
         df.clean()
@@ -70,6 +71,7 @@ if __name__ == '__main__':
                         + year[:-4] 
                         + '.pkl')
         print(f'Wrote {str(year[:-4])}')
+    '''
     '''
     for year in list_res:
         df = Data(respath + year)
@@ -81,6 +83,7 @@ if __name__ == '__main__':
                         + '.pkl')
         print(f'Wrote {str(year[:-4])}')
     '''
+    '''
     for year in list_res:
         df = Data(respath + year)
         df.clean()
@@ -90,7 +93,8 @@ if __name__ == '__main__':
                         + year[:-4] 
                         + '.pkl')
         print(f'Wrote {str(year[:-4])}')
-    
+    '''
+    list_res = ['2011.csv', '2012.csv', '2013.csv', '2014.csv', '2015.csv', '2016.csv', '2017.csv', '2018.csv']
     for year in list_res:
         df = Data(respath + year)
         df.clean()
