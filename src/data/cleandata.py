@@ -1,4 +1,4 @@
-from dataclass import *
+import dataclass
 import os
 
 # Create filepaths within df directory
@@ -66,7 +66,7 @@ if __name__ == '__main__':
         df.clean()
         df.make_DistanceByCustomerZIP()
         df.write_to_pkl(cleanpath
-                        + 'DistanceByCustomerZip/'
+                        + 'DistanceByCustomerZIP/'
                         + year[:-4] 
                         + '.pkl')
         print(f'Wrote {str(year[:-4])}')
@@ -76,11 +76,30 @@ if __name__ == '__main__':
         df.clean()
         df.make_DistanceByFacilityZIP()
         df.write_to_pkl(cleanpath
-                        + 'DistanceByFacilityZip/'
+                        + 'DistanceByFacilityZIP/'
                         + year[:-4] 
                         + '.pkl')
         print(f'Wrote {str(year[:-4])}')
     '''
+    for year in list_res:
+        df = Data(respath + year)
+        df.clean()
+        df.make_DistanceByFacilityState()
+        df.write_to_pkl(cleanpath
+                        + 'DistanceByFacilityState/'
+                        + year[:-4] 
+                        + '.pkl')
+        print(f'Wrote {str(year[:-4])}')
+    
+    for year in list_res:
+        df = Data(respath + year)
+        df.clean()
+        df.make_DistanceByCustomerState()
+        df.write_to_pkl(cleanpath
+                        + 'DistanceByCustomerState/'
+                        + year[:-4] 
+                        + '.pkl')
+        print(f'Wrote {str(year[:-4])}')
     '''
     #lst = [data2006.df, data2007.df]
     #data0607 = combine(*lst)

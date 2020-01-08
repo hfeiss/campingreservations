@@ -42,7 +42,7 @@ ax.spines["right"].set_visible(False)
 ax.spines["left"].set_visible(False) 
 
 plt.ylim(-200000, 7000000)    
-plt.xlim(-.25, 16)
+plt.xlim(.25, 17)
 plt.xlabel('Number of Nights', fontsize = 14)
 plt.title('Number of Reservations by Length of Stay', fontsize = 20)
 

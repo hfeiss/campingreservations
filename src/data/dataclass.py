@@ -67,7 +67,8 @@ class Data(object):
                         STRING(OrderNumber),
                         STRING(UseType),
                         INT(FacilityID),
-                        INT(FacilityZIP),
+                        INT(FacilityZIP)
+                        FacilityState,
                         FacilityLongitude,
                         FacilityLatitude,
                         INT(CustomerZIP),
@@ -294,7 +295,7 @@ class Data(object):
         result = spark.sql('''
                     SELECT
                         SUBSTRING(FacilityZIP, 1, 5)
-                        AS CustomerZIP,
+                        AS FacilityZIP,                        
                         DistanceTraveled
                     FROM
                         temp
@@ -302,12 +303,55 @@ class Data(object):
         result.createOrReplaceTempView('temp')
         result = spark.sql('''
                     SELECT
-                        CustomerZIP,
+                        FacilityZIP,
                         AVG(DistanceTraveled)
                     FROM
                         temp
                     GROUP BY
-                        CustomerZIP
+                        FacilityZIP
+                    ''')
+        result.createOrReplaceTempView('temp')
+        self.df = self.to_df()
+
+    def make_DistanceByCustomerState(self):
+        result = spark.sql('''
+                    SELECT
+                        CustomerState,                        
+                        DistanceTraveled
+                    FROM
+                        temp
+                    ''')
+        result.createOrReplaceTempView('temp')
+        result = spark.sql('''
+                    SELECT
+                        CustomerState,
+                        AVG(DistanceTraveled)
+                    FROM
+                        temp
+                    GROUP BY
+                        CustomerState
+                    ''')
+        result.createOrReplaceTempView('temp')
+        self.df = self.to_df()
+
+
+    def make_DistanceByFacilityState(self):
+        result = spark.sql('''
+                    SELECT
+                        FacilityState,                        
+                        DistanceTraveled
+                    FROM
+                        temp
+                    ''')
+        result.createOrReplaceTempView('temp')
+        result = spark.sql('''
+                    SELECT
+                        FacilityState,
+                        AVG(DistanceTraveled)
+                    FROM
+                        temp
+                    GROUP BY
+                        FacilityState
                     ''')
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
