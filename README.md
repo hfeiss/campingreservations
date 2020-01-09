@@ -62,7 +62,7 @@ This analysis found no direct correlation between the average distance traveled<
  
 This data is complicated by reservations made to/from Alaska and Hawaii. Computation time did not allow for excluding these states as outliers.
  
-![](/images/HypothesisTest.png)
+![](/images/hypothesistest.png)
  
 However, the statistical distribution of the *averages for each year* do appear to differ with a pseudo p value of = 0.016
  
