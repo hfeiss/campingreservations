@@ -4,7 +4,7 @@
  
 Established in 2003, recreation.gov manages over 3 million reservations every year. These reservations are for anything from permit lotteries to fire-tower rentals in US National Parks and US Forest Service lands.
  
-Every reservation made from 2006 through 2018 is available for public download through their API: about 10 gigabytes of .csv!
+Every reservation made from 2006 through 2018 is available for public download via their API: about 10 gigabytes of .csv!
  
 This repository explores factors that determine how far one is willing to travel to a campground, and how long they stay once there.
  
