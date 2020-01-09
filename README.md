@@ -30,3 +30,7 @@ Lenght of stay got off: throw out values > 16
 
 # This
 
+# Further
+Set up true distributed computation
+Analize all years together
+Add autosave
