@@ -27,7 +27,7 @@ def make_gif(sourcepath, folder, years=None):
                    append_images=frames[1:],
                    save_all=True,
                    duration=600,
-                   loop=1)
+                   loop=0)
 
 
 if __name__ == '__main__':

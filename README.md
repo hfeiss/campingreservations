@@ -40,7 +40,7 @@ The reservation data is provided as a seperate .csv for every year. Each year ha
 > LargeTentOver9x12 •
 > SmallTent
 
-In addition to the reservations, relational databases of campground information are also available for download.
+In addition to the reservations, relational databases of campground information are also available for download. One can extract another 50 attributes for every `FacilityID`.
 
 # Exploratory Analysis
 
@@ -50,23 +50,61 @@ Interestingly,  `Marinaboat` has only one non-null value in all of the years. Fu
 
 ![](/images/README/marinaboat.jpg)
 
-Formatting within the columns is mostly consistent, but does requrie type casting, truncation, and removing impurities.
+Formatting within the columns is mostly consistent, but does require type casting, truncation, and removing impurities.
 
-For most quereis, 35% of the data is removed for either formating or nulls or. For sorting by `FacilityZIP`, an unfortunate 60% is removed due to nulls.
+For most quereis, 35% of the data is removed for either formating or nulls. For sorting by `FacilityZIP`, an unfortunate 60% is removed due to nulls, but atleast 1 million rows remain in each year's data.
+
+# Conclusions
+
+## Distance Traveled vs. Number of Nights
+
+This analysis found no direct correlation between the average distance traveled<sup>[1](#myfootnote1)</sup> , and number of nights one stays at a facility. In almost every year, the standard deviation of the averages is greater than the mean itself.
+
+This data is complicated by rservations made to/from Alaska and Hawaii. Computation time did not allow for excluding these states as outliers.
+
+![](/images/HypothesisTest.png)
+
+However, the statistal distribution of the *averages for each year* do appear to differ with a pseudo p value of = 0.016
+
+These results are counterintuitive; it seems people travel longer the shorter the stay! Also, the distances for travel are improbable for a "weekend warior" trip. Fundamentally, the analysis is not accounting for how people actually travel. The basis for this analysis is one travels from the home address to the facility. In reality, reservations are likely linked together on road trips and vacations.
+
+![](/images/TypeOverTime.png)
+
+The large - and growing - proportion of resevations made for RV's and other motorized transport suppor this notion.
+
+## Distance by Customer's State
+![](/images/CustomerState.gif)
+
+As does the fact that, on average, reservations made from the North East, Flordia (and Hawaii and Alaska), are for a distance of +1,000 miles.
+
+## Distance by Destination's State
+![](/images/FacilityState.gif)
+
+Lastly, year after year, reservations are made from across the country to visit Alaska and the Grand Canyon.
+
+![](/images/README/manko.jpg)
+
 
 # Methods
 
 ### Big Data
-This project uses an Amazon Web Service's m5a.8xlarge EC2 instance. The instance builds and runs a docker pyspark container. The scripts issue SQL queries into a SparkContext and the results of the queries are saved as .pickels in `data/cleaned`. The clean .pkl files are moved into S3 storage, and then downloaded for analysis on a local machine.
+This project uses an Amazon Web Service's m5a.8xlarge EC2 instance. The instance runs and starts a docker pyspark container. The scripts issue SQL queries into a SparkContext for cleaning. Additionally, ZIP codes are converted into latitueds and longitudes, and the distance between the customer's home and the facility is calculated. The average computation time is 45 minutes per year.
+
+Lastly, the results are saved as .pickels in `data/cleaned`. The clean .pkl files are moved into AWS S3 storage, for backup / download.
 
 ### Further Cleaning
-The cleaned data are less than 10mb size: perfect for local analysis. The .pkl files are read into a pandas DataFrame. States outside of the United States are removed, as are reservations with impossible durations due to date boundries at the begining of year's dates.
+The cleaned data are less than 10mb size: perfect for local analysis. The .pkl files are read into pandas DataFrames. States outside of the United States are removed, as are reservations with impossible durations due to date boundries at the begining of year's dates.
 
 ### Matplotlib
+First, a histogram of the duration of stays is created. This histogram is used to decide the two "Length Of Stay" bins: weekend trips and trips longer than two nights.
+
+![](/images/HistogramOfNights.png)
+
+One's intuition is likely correct here. Reservations are usually two nights: the length of a weekend. Counts rapidly decline until another steep drop between 7 and 8 nights: the length of a week. Finally, there's a small spike at 14 nights: the maximum length of stay at most facilties.
 
 ### Folium
+Finally, folium is used to generate maps of the average distance between the `CustomerZIP` and the campground's location given either the `CustomerState` or the `FacilityState`. Selenium.webdriver is used to generate .png images from the interative maps, and PIL converts them into .gif seen above.
 
-# Conclusions
 
 # Further Analysis
 Combine all years into one. Get total info from them.
@@ -74,3 +112,10 @@ Combine all years into one. Get total info from them.
 Set up true distributed computation
 Analize all years together
 Add autosave
+
+ZIP codes
+
+bins for distnace
+
+# Footnotes
+<a name="myfootnote1">1</a>: as calculated by the orthdromic distance between a reservation's `customerZIP` code to a facility's (`FacilityLatitude`, `FacilityLongitude`). As mentioned in the conclusions, this is likely an innacurate measurment of the distance *actually* traveled.

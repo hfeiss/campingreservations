@@ -21,7 +21,6 @@ data['count(LengthOfStay)'] = 0
 for file in list_years:
     df = pd.read_pickle(cleanpath + 'CountsOfNights/' + file)
     df.fillna(0, inplace=True)
-    # data['count(LengthOfStay)'] += df['count(LengthOfStay)']
     data = pd.concat([data, df], sort=True)
 
 data = data.groupby('LengthOfStay').sum().reset_index()
@@ -35,7 +34,7 @@ ax = plt.subplot(111)
 
 plt.yticks(range(0, 7000001, 1000000),
            [str(x) + " Million" for x in range(0, 8)], fontsize=14)
-plt.xticks(fontsize=14)
+plt.xticks(range(1, 15), fontsize=14)
 
 ax.spines["top"].set_visible(False)
 ax.spines["bottom"].set_visible(False)
@@ -43,9 +42,11 @@ ax.spines["right"].set_visible(False)
 ax.spines["left"].set_visible(False)
 
 plt.ylim(-200000, 7000000)
-plt.xlim(.25, 17)
+plt.xlim(.25, 14.5)
 plt.xlabel('Number of Nights', fontsize=14)
-plt.title('Number of Reservations by Length of Stay', fontsize=20)
+plt.title('Number of Reservations by Length of Stay',
+          fontsize=20,
+          loc='right')
 
 plt.bar(data['LengthOfStay'], data['count(LengthOfStay)'])
 plt.tight_layout()

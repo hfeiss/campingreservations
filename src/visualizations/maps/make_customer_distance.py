@@ -3,7 +3,6 @@ import folium
 import os
 import time
 import selenium.webdriver
-import branca
 
 # Create filepaths within df directory
 mappath = os.path.split(os.path.abspath(''))[0]
