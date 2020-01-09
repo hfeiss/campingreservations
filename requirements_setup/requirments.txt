@@ -30,6 +30,8 @@ docker install on EC2:
 
     reboot
 
+    docker build 7f1b57e85dc5
+
 AWS CLI install on EC2:
     docker exec -it -u 0 sparkbook bash
 

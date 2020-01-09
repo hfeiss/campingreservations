@@ -7,6 +7,9 @@ numbers = [582, 543, 431646, 313049, 1761250,
            2749447]
 
 year = 2006
+total = 0
 for num in range(0, len(numbers), 2):
+    total += numbers[num + 1]
     print(f'{year} is at {numbers[num + 1]/numbers[num]:.2f}')
     year += 1
+print(total)
