@@ -60,24 +60,24 @@ For most quereis, 35% of the data is removed for either formating or nulls. For 
  
 This analysis found no direct correlation between the average distance traveled<sup>[1](#myfootnote1)</sup> , and number of nights one stays at a facility. In almost every year, the standard deviation of the averages is greater than the mean itself.
  
-The power of this test is reduced by reservations made to/from Alaska and Hawaii. Computation time did not allow for excluding these states as outliers.
+The power of this test is reduced by reservations made to/from Alaska and Hawaii where the distances are inherently larger than other states. Computation time did not allow for excluding these states as outliers.
  
 ![](/images/hypothesistest.png)
  
-However, the statistical distribution of the *averages for each year* do appear to differ with a pseudo p value of = 0.016
+That being said, the statistical distribution of the *averages for each year* do appear to differ with a pseudo p value of = 0.016
  
-These results are counterintuitive; it seems people travel longer the shorter the stay! Also, driving 650 miles, one way, for "weekend warrior" trip is very unrealistic.
+These results are counterintuitive; it seems people travel longer the shorter the stay! A further complication is that driving 650 miles one way for "weekend warrior" trip is very unrealistic.
  
-Fundamentally, this analysis is not accounting for how people actually camp. The basis that distance traveled to a facility is equal to the distance from the home address is evidently wrong. In reality, reservations are likely linked together on road trips and vacations, where the distance traveled is from the previous night's reservation not the home.
+Fundamentally, it seems this analysis is not accounting for how people actually camp. The basis that distance traveled to a facility is equal to the distance from the home address is evidently wrong. In reality, reservations are likely linked together on road trips and vacations longer than a weekend; where the distance traveled is from the previous night's reservation not the home.
  
 ![](/images/TypeOverTime.png)
  
-The large - and growing - proportion of reservations made for RV's and other motorized transport adds evidence to this notion.
+The large proportion of reservations made for RV's and other motorized transport adds evidence to this notion.
  
 ## Distance by Customer's State
 ![](/images/CustomerState.gif)
  
-As does the fact that, on average, reservations made from the North East, Florida (and Hawaii and Alaska), are for a distance of +1,000 miles.
+As does the fact that, on average, reservations made from the North East, Florida (and Hawaii and Alaska), are for a distance of +1,000 miles: possibly longer roadtrips connecting multiple nights.
  
 ## Distance by Destination's State
 ![](/images/FacilityState.gif)
@@ -92,15 +92,15 @@ Lastly, year after year, reservations are made from across the country to visit 
 ### Big Data
 This project uses an Amazon Web Service's m5a.8xlarge EC2 instance. The instance runs and starts a docker pyspark container. The scripts in [src](../src) issue SQL queries into a SparkContext for cleaning.
  
-Additionally, ZIP codes are converted into latitudes and longitudes, then the distance between the customer's home and the facility is calculated, adding a column for each step. The average computation time is 45 minutes per year.
+Additionally, ZIP codes are converted into latitudes and longitudes, then the distance between the customer's home and the facility is calculated, adding a column for each step. The average computation time is 45 minutes per year's data.
  
 Lastly, the results are saved as .pickles in [data/cleaned](../data/cleaned) directories. The clean .pkl files are moved into AWS S3 storage, for backup / download.
  
-### Further Cleaning
+### Two Rounds of Cleaning
 The cleaned data are less than 10mb size: perfect for local analysis. The .pkl files are read into pandas DataFrames. States outside of the United States are removed, as are reservations with impossible durations due to date boundaries at the beginning of year's dates.
  
 ### Matplotlib
-For first analysis, a histogram of the duration of stays is created. This histogram is used to decide the two `LengthOfStay` bins: weekend trips and trips longer than two nights.
+For first analysis, a histogram of the duration of stays is created. This histogram is used to decide the two `LengthOfStay` bins: weekend trips and trips longer than two nights; roughly half of the reservations belong in each category.
  
 ![](/images/HistogramOfNights.png)
  
