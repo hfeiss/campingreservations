@@ -9,7 +9,7 @@ conf.set('spark.cores.max', '6')
 conf.set('spark.executor.memory', '10g')
 conf.set('spark.executor.cores', '6')
 conf.set('spark.driver.memory','10g')
-conf.set('spark.sql.shuffle.partitions', '10000')
+conf.set('spark.sql.shuffle.partitions', '1000')
 spark = (ps.sql.SparkSession.builder 
         .master("local[*]") 
         .appName("Capstone I")
@@ -334,14 +334,6 @@ class Data(object):
         result = spark.sql('''
             SELECT
                 CustomerState,                        
-                DistanceTraveled
-            FROM
-                temp
-            ''')
-        result.createOrReplaceTempView('temp')
-        result = spark.sql('''
-            SELECT
-                CustomerState,
                 AVG(DistanceTraveled)
             FROM
                 temp
@@ -356,14 +348,6 @@ class Data(object):
         result = spark.sql('''
             SELECT
                 FacilityState,                        
-                DistanceTraveled
-            FROM
-                temp
-            ''')
-        result.createOrReplaceTempView('temp')
-        result = spark.sql('''
-            SELECT
-                FacilityState,
                 AVG(DistanceTraveled)
             FROM
                 temp

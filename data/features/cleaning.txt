@@ -25,16 +25,16 @@
 2018.csv pre:  3424271                                                          
 2018.csv post: 2749447
 
-2006 is at 0.93
-2007 is at 0.73
-2008 is at 0.78
-2009 is at 0.77
-2010 is at 0.72
-2011 is at 0.71
-2012 is at 0.69
-2013 is at 0.68
-2014 is at 0.67
-2015 is at 0.67
-2016 is at 0.73
-2017 is at 0.72
-2018 is at 0.80
+2006 is at 0.93% of original
+2007 is at 0.73% of original
+2008 is at 0.78% of original
+2009 is at 0.77% of original
+2010 is at 0.72% of original
+2011 is at 0.71% of original
+2012 is at 0.69% of original
+2013 is at 0.68% of original
+2014 is at 0.67% of original
+2015 is at 0.67% of original
+2016 is at 0.73% of original
+2017 is at 0.72% of original
+2018 is at 0.80% of original

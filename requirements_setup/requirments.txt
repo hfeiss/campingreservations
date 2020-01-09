@@ -2,7 +2,7 @@ AWS EC2:
     m5a.8xlarge
     ubuntu 18.04
     
-docker:
+docker install on EC2:
     sudo apt-get update
 
     sudo apt-get install \
@@ -30,7 +30,7 @@ docker:
 
     reboot
 
-AWS CLI:
+AWS CLI install on EC2:
     docker exec -it -u 0 sparkbook bash
 
     wget "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -51,8 +51,6 @@ python packages:
     time
     os
     PIL
-
-Anaconda 3
 
 mkdir capstone
     aws2 s3 sync s3://recreationbucket .

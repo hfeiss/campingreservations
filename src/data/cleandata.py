@@ -47,6 +47,7 @@ if __name__ == '__main__':
     This is about 80 hours of computation for all years
     +++++++++++++++++++++++++++++++++++++++++++++++++++
     '''
+    # years_left = ['2006.csv', '2008.csv']
     #make_pkls(respath, Data.make_DistanceByCustomerState, years=years_left)
     #make_pkls(respath, Data.make_DistanceByCustomerZIP)
     make_pkls(respath, Data.make_DistanceByFacilityState)
