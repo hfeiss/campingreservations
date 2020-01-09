@@ -54,6 +54,6 @@ plt.legend(fontsize=14, loc='upper left')
 plt.tight_layout()
 
 if __name__ == '__main__':
-    plt.savefig(imagepath + '/HypothesisTest.png')
+    plt.savefig(imagepath + '/HypothesisTest.png', dpi=200)
     p_value = weekend_dist.cdf(info.longer_avg)
     print(f'P-value of observing this average: {p_value:.3f}')
