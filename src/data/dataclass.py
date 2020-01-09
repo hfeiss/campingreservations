@@ -40,6 +40,8 @@ class Data(object):
                                     inferSchema=True)
         self.raw.createOrReplaceTempView('temp')
         self.df = self.to_df()
+        self.folder = 'DistanceByFacilityState/'
+
 
     def to_df(self):
         # Creates & return a spark.df from the temp
@@ -62,7 +64,7 @@ class Data(object):
         self.cleaned = self.df   
 
     def write_to_pkl(self, path):
-        self.df.select('*').toPandas().to_pickle(path)
+        self.to_df().toPandas().to_pickle(path)
 
     def select_columns(self):
         result = spark.sql('''
@@ -70,7 +72,7 @@ class Data(object):
                 STRING(OrderNumber),
                 STRING(UseType),
                 INT(FacilityID),
-                INT(FacilityZIP)
+                INT(FacilityZIP),
                 FacilityState,
                 FacilityLongitude,
                 FacilityLatitude,
@@ -261,7 +263,8 @@ class Data(object):
                     AS Car,
                 SUM(FifthWheel)
                     AS FifthWheel,
-                SUM(Van) AS Van,
+                SUM(Van)
+                    AS Van,
                 SUM(CanoeKayak)
                     AS CanoeKayak,
                 SUM(BoatTrailer)
