@@ -60,7 +60,7 @@ For most quereis, 35% of the data is removed for either formating or nulls. For 
  
 This analysis found no direct correlation between the average distance traveled<sup>[1](#myfootnote1)</sup> , and number of nights one stays at a facility. In almost every year, the standard deviation of the averages is greater than the mean itself.
  
-This data is complicated by reservations made to/from Alaska and Hawaii. Computation time did not allow for excluding these states as outliers.
+The power of this test is reduced by reservations made to/from Alaska and Hawaii. Computation time did not allow for excluding these states as outliers.
  
 ![](/images/hypothesistest.png)
  
