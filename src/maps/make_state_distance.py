@@ -1,6 +1,8 @@
 import pandas as pd
 import folium
 import os
+import time
+import selenium.webdriver
 
 # Create filepaths within df directory
 srcpath = os.path.split(os.path.abspath(''))[0]
@@ -30,7 +32,7 @@ def make_maps(sourcepath, years=None):
         distance.reset_index(inplace = True, drop = True)
         distance.sort_values('CustomerState', inplace = True)
 
-        m = folium.Map(location=[48, -102], zoom_start=3)
+        m = folium.Map(location=[48, -102], zoom_start=2.5)
 
         folium.Choropleth(
             geo_data=state_geo,
@@ -46,8 +48,27 @@ def make_maps(sourcepath, years=None):
 
         folium.LayerControl().add_to(m)
 
-        m.save(f'{imagepath}maphtmls/{str(year[:-4])}.html')
+        m.save(f'maphtmls/CustomerState/{str(year[:-4])}.html')
+
+def make_images():
+    list_years = []
+    for root, dirs, file in os.walk('./maphtmls'):
+        list_years.extend(file)
+    list_years.sort()    
+    delay = 5
+    print(list_years)
+    for year in list_years:
+        print('intheloop')
+        tmpurl = f'file://{srcpath}/maps/maphtmls/CustomerState/{year}'
+        print(tmpurl)
+        browser = selenium.webdriver.Safari()
+        browser.get(tmpurl)
+        time.sleep(delay)
+        browser.save_screenshot(f'{imagepath}/maps/CustomerState/{str(year[:-5])}.png')
+        browser.quit()
+
 
 if __name__ == '__main__':
-    
+
     make_maps(cleanpath + 'DistanceByCustomerState/')
+    make_images()

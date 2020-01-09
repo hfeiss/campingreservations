@@ -23,14 +23,15 @@ def make_pkls(sourcepath, operation, years = None):
     Output
     Saves a .plk in at .folder of the operation in cleanpath
     '''
+    list_years = []
     if years:
-        list_res = years
+        list_years = years
     else:
         for root, dirs, file in os.walk(sourcepath):
-            list_res.extend(file)
-    list_res.sort()
+            list_years.extend(file)
+    list_years.sort()
 
-    for year in list_res:
+    for year in list_years:
         df = Data(sourcepath + year)
         Data.clean(df)
         operation(df)
@@ -46,10 +47,9 @@ if __name__ == '__main__':
     This is about 80 hours of computation for all years
     +++++++++++++++++++++++++++++++++++++++++++++++++++
     '''
-    years_left = ['2012.csv', '2013.csv', '2014.csv', '2015.csv', '2016.csv', '2017.csv', '2018.csv']
-    make_pkls(respath, Data.make_DistanceByCustomerState, years = years_left)
+    #make_pkls(respath, Data.make_DistanceByCustomerState, years=years_left)
     #make_pkls(respath, Data.make_DistanceByCustomerZIP)
-    #make_pkls(respath, Data.make_DistanceByFacilityState)
+    make_pkls(respath, Data.make_DistanceByFacilityState)
     #make_pkls(respath, Data.make_DistanceByFacilityZIP)
     #make_pkls(respath, Data.make_DistanceByWeekend)
     #make_pkls(respath, Data.make_DistanceByLonger)

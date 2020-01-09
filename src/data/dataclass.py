@@ -9,7 +9,7 @@ conf.set('spark.cores.max', '6')
 conf.set('spark.executor.memory', '10g')
 conf.set('spark.executor.cores', '6')
 conf.set('spark.driver.memory','10g')
-conf.set('spark.sql.shuffle.partitions', '100')
+conf.set('spark.sql.shuffle.partitions', '10000')
 spark = (ps.sql.SparkSession.builder 
         .master("local[*]") 
         .appName("Capstone I")
@@ -45,11 +45,11 @@ class Data(object):
         # Creates & return a spark.df from the temp
         # For using spark methods on Data objects
         return spark.sql('''
-                        SELECT
-                            *
-                        FROM
-                            temp
-                        ''') 
+            SELECT
+                *
+            FROM
+                temp
+            ''') 
 
     def clean(self):
         self.select_columns()
@@ -61,39 +61,42 @@ class Data(object):
         self.make_DistanceTraveled()
         self.cleaned = self.df   
 
+    def write_to_pkl(self, path):
+        self.df.select('*').toPandas().to_pickle(path)
+
     def select_columns(self):
         result = spark.sql('''
-                    SELECT
-                        STRING(OrderNumber),
-                        STRING(UseType),
-                        INT(FacilityID),
-                        INT(FacilityZIP)
-                        FacilityState,
-                        FacilityLongitude,
-                        FacilityLatitude,
-                        INT(CustomerZIP),
-                        CustomerState,
-                        TotalPaid,
-                        StartDate,
-                        EndDate,
-                        INT(NumberOfPeople),
-                        INT(Tent),
-                        INT(Popup),
-                        INT(Trailer),
-                        INT(RVMotorhome),
-                        INT(Boat),
-                        INT(Car),
-                        INT(FifthWheel),
-                        INT(Van),
-                        INT(CanoeKayak),
-                        INT(BoatTrailer),
-                        INT(PowerBoat),
-                        INT(PickupCamper),
-                        INT(LargeTentOver9x12),
-                        INT(SmallTent)
-                    FROM
-                        temp
-                    ''')
+            SELECT
+                STRING(OrderNumber),
+                STRING(UseType),
+                INT(FacilityID),
+                INT(FacilityZIP)
+                FacilityState,
+                FacilityLongitude,
+                FacilityLatitude,
+                INT(CustomerZIP),
+                CustomerState,
+                TotalPaid,
+                StartDate,
+                EndDate,
+                INT(NumberOfPeople),
+                INT(Tent),
+                INT(Popup),
+                INT(Trailer),
+                INT(RVMotorhome),
+                INT(Boat),
+                INT(Car),
+                INT(FifthWheel),
+                INT(Van),
+                INT(CanoeKayak),
+                INT(BoatTrailer),
+                INT(PowerBoat),
+                INT(PickupCamper),
+                INT(LargeTentOver9x12),
+                INT(SmallTent)
+            FROM
+                temp
+            ''')
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
@@ -112,7 +115,7 @@ class Data(object):
         self.df = self.to_df()
 
     def remove_category_nulls(self):
-        result = self.df.dropna(how = 'all', subset=
+        result = self.df.dropna(how='all', subset=
             [   'Tent',
                 'Popup',
                 'Trailer',
@@ -134,231 +137,236 @@ class Data(object):
     def make_CustomerLatitude(self):
         get_lat_udf = udf(get_lat, FloatType())
         result = self.df.withColumn('CustomerLatitude',
-                    get_lat_udf(self.df['CustomerZIP']))
+            get_lat_udf(self.df['CustomerZIP']))
+
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
     def make_CustomerLongitude(self):
         get_lng_udf = udf(get_lng, FloatType())
         result = self.df.withColumn('CustomerLongitude',
-                    get_lng_udf(self.df['CustomerZIP']))
+            get_lng_udf(self.df['CustomerZIP']))
+
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
     def make_DistanceTraveled(self):
         get_dst_udf = udf(get_dst, FloatType())
         result = self.df.withColumn('DistanceTraveled',
-                    get_dst_udf(self.df['FacilityLatitude'],
-                                self.df['FacilityLongitude'],
-                                self.df['CustomerLatitude'],
-                                self.df['CustomerLongitude']))
+            get_dst_udf(self.df['FacilityLatitude'],
+                        self.df['FacilityLongitude'],
+                        self.df['CustomerLatitude'],
+                        self.df['CustomerLongitude']))
+
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
     def make_LengthOfStay(self):
         result = self.df.selectExpr('*',
-                            ''' 
-                            DATEDIFF(EndDate, StartDate) 
-                            as LengthOfStay
-                            ''')
+            ''' 
+            DATEDIFF(EndDate, StartDate) 
+            as LengthOfStay
+            ''')
         result.createOrReplaceTempView('temp')
+        # And remove results that are impossible
         result = spark.sql('''
-                    SELECT
-                        *
-                    FROM
-                        temp
-                    WHERE
-                        LengthOfStay < 17
-                    ''')
+            SELECT
+                *
+            FROM
+                temp
+            WHERE
+                LengthOfStay < 17
+            ''')
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
-    def write_to_pkl(self, path):
-        '''
-        Input
-        spark df
-        name (string)
-
-        Output
-        csv
-        '''
-        self.df.select('*').toPandas().to_pickle(path)
-
     def make_DistanceByWeekend(self):
         result = spark.sql('''
-                    SELECT
-                        *
-                    FROM
-                        temp
-                    WHERE
-                        LengthOfStay < 3 AND
-                        CustomerState != 'AK'
-                    ''')
+            SELECT
+                *
+            FROM
+                temp
+            WHERE
+                LengthOfStay < 3 AND
+                CustomerState != 'AK'
+            ''')
         result.createOrReplaceTempView('temp')
         result = spark.sql('''
-                    SELECT
-                        AVG(DistanceTraveled),
-                        MAX(DistanceTraveled),
-                        MIN(DistanceTraveled),
-                        STDDEV(DistanceTraveled) AS StddevDist
-                    FROM
-                        temp
-                    ''')
+            SELECT
+                AVG(DistanceTraveled),
+                MAX(DistanceTraveled),
+                MIN(DistanceTraveled),
+                STDDEV(DistanceTraveled) AS StddevDist
+            FROM
+                temp
+            ''')
         result.createOrReplaceTempView('temp')
         self.folder = 'DistanceByWeekend/NoAK'
         self.df = self.to_df()
 
     def make_DistanceByLonger(self):
         result = spark.sql('''
-                    SELECT
-                        *
-                    FROM
-                        temp
-                    WHERE
-                        LengthOfStay > 2 AND
-                        CustomerState != 'AK'
-
-                    ''')
+            SELECT
+                *
+            FROM
+                temp
+            WHERE
+                LengthOfStay > 2 AND
+                CustomerState != 'AK
+            ''')
         result.createOrReplaceTempView('temp')
         result = spark.sql('''
-                    SELECT
-                        AVG(DistanceTraveled),
-                        MAX(DistanceTraveled),
-                        MIN(DistanceTraveled),
-                        STDDEV(DistanceTraveled) AS StddevDist
-                    FROM
-                        temp
-                    ''')
+            SELECT
+                AVG(DistanceTraveled),
+                MAX(DistanceTraveled),
+                MIN(DistanceTraveled),
+                STDDEV(DistanceTraveled) AS StddevDist
+            FROM
+                temp
+            ''')
         result.createOrReplaceTempView('temp')
         self.folder = 'DistanceByLonger/NoAK'
         self.df = self.to_df()
 
     def make_CountsOfNights(self):
         result = spark.sql('''
-                    SELECT
-                        LengthOfStay,
-                        COUNT(LengthOfStay)
-                    FROM
-                        temp
-                    GROUP BY
-                        LengthOfStay
-                    ORDER BY
-                        LengthOfStay
-                    ''')
+            SELECT
+                LengthOfStay,
+                COUNT(LengthOfStay)
+            FROM
+                temp
+            GROUP BY
+                LengthOfStay
+            ORDER BY
+                LengthOfStay
+            ''')
         result.createOrReplaceTempView('temp')
         self.folder = 'CountsOfNights/'
         self.df = self.to_df()
     
     def make_SumOfCategories(self):
         result = spark.sql('''
-                    SELECT
-                        SUM(Tent) AS Tent,
-                        SUM(Popup) AS Popup,
-                        SUM(Trailer) AS Trailer,
-                        SUM(RVMotorhome) AS RVMotorhome,
-                        SUM(Boat) AS Boat,
-                        SUM(Car) AS Car,
-                        SUM(FifthWheel) AS FifthWheel,
-                        SUM(Van) AS Van,
-                        SUM(CanoeKayak) AS CanoeKayak,
-                        SUM(BoatTrailer) AS BoatTrailer,
-                        SUM(PowerBoat) AS PowerBoat,
-                        SUM(PickupCamper) AS PickupCamper,
-                        SUM(LargeTentOver9x12) AS LargeTentOver9x12,
-                        SUM(SmallTent) AS SmallTent
-                    FROM
-                        temp
-                        ''')
+            SELECT
+                SUM(Tent)
+                    AS Tent,
+                SUM(Popup)
+                    AS Popup,
+                SUM(Trailer)
+                    AS Trailer,
+                SUM(RVMotorhome)
+                    AS RVMotorhome,
+                SUM(Boat)
+                    AS Boat,
+                SUM(Car)
+                    AS Car,
+                SUM(FifthWheel)
+                    AS FifthWheel,
+                SUM(Van) AS Van,
+                SUM(CanoeKayak)
+                    AS CanoeKayak,
+                SUM(BoatTrailer)
+                    AS BoatTrailer,
+                SUM(PowerBoat)
+                    AS PowerBoat,
+                SUM(PickupCamper) 
+                    AS PickupCamper,
+                SUM(LargeTentOver9x12) 
+                    AS LargeTentOver9x12,
+                SUM(SmallTent)
+                    AS SmallTent
+            FROM
+                temp
+                ''')
         result.createOrReplaceTempView('temp')
         self.folder = 'SumOfCategories/'
         self.df = self.to_df()            
 
     def make_DistanceByCustomerZIP(self):
         result = spark.sql('''
-                    SELECT
-                        SUBSTRING(CustomerZIP, 1, 5)
-                        AS CustomerZIP,
-                        DistanceTraveled
-                    FROM
-                        temp
-                    ''')
+            SELECT
+                SUBSTRING(CustomerZIP, 1, 5)
+                AS CustomerZIP,
+                DistanceTraveled
+            FROM
+                temp
+            ''')
         result.createOrReplaceTempView('temp')
         result = spark.sql('''
-                    SELECT
-                        CustomerZIP,
-                        AVG(DistanceTraveled)
-                    FROM
-                        temp
-                    GROUP BY
-                        CustomerZIP
-                    ''')
+            SELECT
+                CustomerZIP,
+                AVG(DistanceTraveled)
+            FROM
+                temp
+            GROUP BY
+                CustomerZIP
+            ''')
         result.createOrReplaceTempView('temp')
         self.folder = 'DistanceByCustomerZIP/'
         self.df = self.to_df()
 
     def make_DistanceByFacilityZIP(self):
         result = spark.sql('''
-                    SELECT
-                        SUBSTRING(FacilityZIP, 1, 5)
-                        AS FacilityZIP,                        
-                        DistanceTraveled
-                    FROM
-                        temp
-                    ''')
+            SELECT
+                SUBSTRING(FacilityZIP, 1, 5)
+                AS FacilityZIP,                        
+                DistanceTraveled
+            FROM
+                temp
+            ''')
         result.createOrReplaceTempView('temp')
         result = spark.sql('''
-                    SELECT
-                        FacilityZIP,
-                        AVG(DistanceTraveled)
-                    FROM
-                        temp
-                    GROUP BY
-                        FacilityZIP
-                    ''')
+            SELECT
+                FacilityZIP,
+                AVG(DistanceTraveled)
+            FROM
+                temp
+            GROUP BY
+                FacilityZIP
+            ''')
         result.createOrReplaceTempView('temp')
         self.folder = 'DistanceByFacilityZIP/'
         self.df = self.to_df()
 
     def make_DistanceByCustomerState(self):
         result = spark.sql('''
-                    SELECT
-                        CustomerState,                        
-                        DistanceTraveled
-                    FROM
-                        temp
-                    ''')
+            SELECT
+                CustomerState,                        
+                DistanceTraveled
+            FROM
+                temp
+            ''')
         result.createOrReplaceTempView('temp')
         result = spark.sql('''
-                    SELECT
-                        CustomerState,
-                        AVG(DistanceTraveled)
-                    FROM
-                        temp
-                    GROUP BY
-                        CustomerState
-                    ''')
+            SELECT
+                CustomerState,
+                AVG(DistanceTraveled)
+            FROM
+                temp
+            GROUP BY
+                CustomerState
+            ''')
         result.createOrReplaceTempView('temp')
         self.folder = 'DistanceByCustomerState/'
         self.df = self.to_df()
 
     def make_DistanceByFacilityState(self):
         result = spark.sql('''
-                    SELECT
-                        FacilityState,                        
-                        DistanceTraveled
-                    FROM
-                        temp
-                    ''')
+            SELECT
+                FacilityState,                        
+                DistanceTraveled
+            FROM
+                temp
+            ''')
         result.createOrReplaceTempView('temp')
         result = spark.sql('''
-                    SELECT
-                        FacilityState,
-                        AVG(DistanceTraveled)
-                    FROM
-                        temp
-                    GROUP BY
-                        FacilityState
-                    ''')
+            SELECT
+                FacilityState,
+                AVG(DistanceTraveled)
+            FROM
+                temp
+            GROUP BY
+                FacilityState
+            ''')
         result.createOrReplaceTempView('temp')
         self.folder = 'DistanceByFacilityState/'
         self.df = self.to_df()

@@ -43,10 +43,13 @@ AWS CLI:
 
     aws2 configure
 
-pip packages:
+python packages:
     geopy
     uszipcode
     folium
+    selenium.webdriver
+    time
+    os
 
 mkdir capstone
     aws2 s3 sync s3://recreationbucket .
