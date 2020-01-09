@@ -26,20 +26,20 @@ for year in list_years:
     longer_avgs.append(longer['avg(DistanceTraveled)'][0])
     weekend = pd.read_pickle(weekendpath + year)
     weekend_avgs.append(weekend['avg(DistanceTraveled)'][0])
-    
+
+
 class WeekendLonger(object):
 
     def __init__(self):
 
         self.weekend_avg = np.average(weekend_avgs)
         self.weekend_std = np.std(weekend_avgs) * np.sqrt(len(weekend_avgs))
-        
+
         self.longer_avg = np.average(longer_avgs)
-        self.longer_std = np.std(longer_avgs) *  np.sqrt(len(longer_avgs))
+        self.longer_std = np.std(longer_avgs) * np.sqrt(len(longer_avgs))
+
 
 if __name__ == '__main__':
 
     info = WeekendLonger()
     print(info.weekend_avg)
-
-

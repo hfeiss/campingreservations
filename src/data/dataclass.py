@@ -8,21 +8,22 @@ conf = ps.SparkConf()
 conf.set('spark.cores.max', '6')
 conf.set('spark.executor.memory', '10g')
 conf.set('spark.executor.cores', '6')
-conf.set('spark.driver.memory','10g')
+conf.set('spark.driver.memory', '10g')
 conf.set('spark.sql.shuffle.partitions', '1000')
-spark = (ps.sql.SparkSession.builder 
-        .master("local[*]") 
-        .appName("Capstone I")
-        .config(conf=conf)
-        .getOrCreate()
-        )
+spark = (ps.sql.SparkSession.builder
+         .master("local[*]")
+         .appName("Capstone I")
+         .config(conf=conf)
+         .getOrCreate()
+         )
 sc = spark.sparkContext
+
 
 class Data(object):
     """
     Input
     File name / path to .csv (string)
-    
+
     Init
     Creates a spark dataframe from the csv
 
@@ -36,12 +37,11 @@ class Data(object):
     def __init__(self, filename):
         self.filename = filename
         self.raw = spark.read.csv(filename,
-                                    header=True,
-                                    inferSchema=True)
+                                  header=True,
+                                  inferSchema=True)
         self.raw.createOrReplaceTempView('temp')
         self.df = self.to_df()
         self.folder = 'DistanceByFacilityState/'
-
 
     def to_df(self):
         # Creates & return a spark.df from the temp
@@ -51,17 +51,17 @@ class Data(object):
                 *
             FROM
                 temp
-            ''') 
+            ''')
 
     def clean(self):
         self.select_columns()
         self.remove_data_nulls()
-        #self.remove_category_nulls()
+        # self.remove_category_nulls()
         self.make_LengthOfStay()
         self.make_CustomerLatitude()
         self.make_CustomerLongitude()
         self.make_DistanceTraveled()
-        self.cleaned = self.df   
+        self.cleaned = self.df
 
     def write_to_pkl(self, path):
         self.to_df().toPandas().to_pickle(path)
@@ -103,43 +103,43 @@ class Data(object):
         self.df = self.to_df()
 
     def remove_data_nulls(self):
-        result = self.df.dropna(how = 'any', subset = 
-            [   'OrderNumber',
-                'FacilityID', 
-                'FacilityLongitude',
-                'FacilityLatitude',
-                'CustomerZIP',
-                'CustomerState',
-                'StartDate',
-                'EndDate'
-            ])
+        result = self.df.dropna(how='any',
+                                subset=['OrderNumber',
+                                        'FacilityID',
+                                        'FacilityLongitude',
+                                        'FacilityLatitude',
+                                        'CustomerZIP',
+                                        'CustomerState',
+                                        'StartDate',
+                                        'EndDate']
+                                )
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
     def remove_category_nulls(self):
-        result = self.df.dropna(how='all', subset=
-            [   'Tent',
-                'Popup',
-                'Trailer',
-                'RVMotorhome',
-                'Boat',
-                'Car',
-                'FifthWheel',
-                'Van',
-                'CanoeKayak',
-                'BoatTrailer',
-                'PowerBoat',
-                'PickupCamper',
-                'LargeTentOver9x12',
-                'SmallTent'
-            ])
+        result = self.df.dropna(how='all',
+                                subset=['Tent',
+                                        'Popup',
+                                        'Trailer',
+                                        'RVMotorhome',
+                                        'Boat',
+                                        'Car',
+                                        'FifthWheel',
+                                        'Van',
+                                        'CanoeKayak',
+                                        'BoatTrailer',
+                                        'PowerBoat',
+                                        'PickupCamper',
+                                        'LargeTentOver9x12',
+                                        'SmallTent']
+                                )
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
     def make_CustomerLatitude(self):
         get_lat_udf = udf(get_lat, FloatType())
         result = self.df.withColumn('CustomerLatitude',
-            get_lat_udf(self.df['CustomerZIP']))
+                                    get_lat_udf(self.df['CustomerZIP']))
 
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
@@ -147,7 +147,7 @@ class Data(object):
     def make_CustomerLongitude(self):
         get_lng_udf = udf(get_lng, FloatType())
         result = self.df.withColumn('CustomerLongitude',
-            get_lng_udf(self.df['CustomerZIP']))
+                                    get_lng_udf(self.df['CustomerZIP']))
 
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
@@ -155,20 +155,20 @@ class Data(object):
     def make_DistanceTraveled(self):
         get_dst_udf = udf(get_dst, FloatType())
         result = self.df.withColumn('DistanceTraveled',
-            get_dst_udf(self.df['FacilityLatitude'],
-                        self.df['FacilityLongitude'],
-                        self.df['CustomerLatitude'],
-                        self.df['CustomerLongitude']))
+                                    get_dst_udf(self.df['FacilityLatitude'],
+                                                self.df['FacilityLongitude'],
+                                                self.df['CustomerLatitude'],
+                                                self.df['CustomerLongitude']))
 
         result.createOrReplaceTempView('temp')
         self.df = self.to_df()
 
     def make_LengthOfStay(self):
         result = self.df.selectExpr('*',
-            ''' 
-            DATEDIFF(EndDate, StartDate) 
-            as LengthOfStay
-            ''')
+                                    '''
+                                    DATEDIFF(EndDate, StartDate)
+                                    as LengthOfStay
+                                    ''')
         result.createOrReplaceTempView('temp')
         # And remove results that are impossible
         result = spark.sql('''
@@ -245,7 +245,7 @@ class Data(object):
         result.createOrReplaceTempView('temp')
         self.folder = 'CountsOfNights/'
         self.df = self.to_df()
-    
+
     def make_SumOfCategories(self):
         result = spark.sql('''
             SELECT
@@ -271,9 +271,9 @@ class Data(object):
                     AS BoatTrailer,
                 SUM(PowerBoat)
                     AS PowerBoat,
-                SUM(PickupCamper) 
+                SUM(PickupCamper)
                     AS PickupCamper,
-                SUM(LargeTentOver9x12) 
+                SUM(LargeTentOver9x12)
                     AS LargeTentOver9x12,
                 SUM(SmallTent)
                     AS SmallTent
@@ -282,7 +282,7 @@ class Data(object):
                 ''')
         result.createOrReplaceTempView('temp')
         self.folder = 'SumOfCategories/'
-        self.df = self.to_df()            
+        self.df = self.to_df()
 
     def make_DistanceByCustomerZIP(self):
         result = spark.sql('''
@@ -311,7 +311,7 @@ class Data(object):
         result = spark.sql('''
             SELECT
                 SUBSTRING(FacilityZIP, 1, 5)
-                AS FacilityZIP,                        
+                AS FacilityZIP,
                 DistanceTraveled
             FROM
                 temp
@@ -333,7 +333,7 @@ class Data(object):
     def make_DistanceByCustomerState(self):
         result = spark.sql('''
             SELECT
-                CustomerState,                        
+                CustomerState,
                 AVG(DistanceTraveled)
             FROM
                 temp
@@ -347,7 +347,7 @@ class Data(object):
     def make_DistanceByFacilityState(self):
         result = spark.sql('''
             SELECT
-                FacilityState,                        
+                FacilityState,
                 AVG(DistanceTraveled)
             FROM
                 temp

@@ -9,7 +9,8 @@ rawpath = os.path.join(datapath, 'raw')
 respath = os.path.join(rawpath, 'reservations_rec_gov/')
 cleanpath = os.path.join(datapath, 'cleaned/')
 
-def make_pkls(sourcepath, operation, years = None):
+
+def make_pkls(sourcepath, operation, years=None):
     '''
     Input
     sourcepath: path to a directory containing .csv files
@@ -19,7 +20,7 @@ def make_pkls(sourcepath, operation, years = None):
     Actions
     Creates a Data object
     Performs Data.operation on each file
-    
+
     Output
     Saves a .plk in at .folder of the operation in cleanpath
     '''
@@ -41,6 +42,7 @@ def make_pkls(sourcepath, operation, years = None):
                         + '.pkl')
         print(f'Wrote {str(year[:-4])} in {df.folder}')
 
+
 if __name__ == '__main__':
     '''
     +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -48,11 +50,11 @@ if __name__ == '__main__':
     +++++++++++++++++++++++++++++++++++++++++++++++++++
     '''
     # years_left = ['2006.csv', '2008.csv']
-    #make_pkls(respath, Data.make_DistanceByCustomerState, years=years_left)
-    #make_pkls(respath, Data.make_DistanceByCustomerZIP)
-    make_pkls(respath, Data.make_DistanceByFacilityState)
-    #make_pkls(respath, Data.make_DistanceByFacilityZIP)
-    #make_pkls(respath, Data.make_DistanceByWeekend)
-    #make_pkls(respath, Data.make_DistanceByLonger)
-    #make_pkls(respath, Data.make_SumOfCategories)
-    #make_pkls(respath, Data.make_CountsOfNights)
+    # make_pkls(respath, Data.make_DistanceByCustomerState, years=years_left)
+    # make_pkls(respath, Data.make_DistanceByCustomerZIP)
+    # make_pkls(respath, Data.make_DistanceByFacilityState)
+    # make_pkls(respath, Data.make_DistanceByFacilityZIP)
+    # make_pkls(respath, Data.make_DistanceByWeekend)
+    # make_pkls(respath, Data.make_DistanceByLonger)
+    # make_pkls(respath, Data.make_SumOfCategories)
+    # make_pkls(respath, Data.make_CountsOfNights)
