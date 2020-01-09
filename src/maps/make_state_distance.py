@@ -3,6 +3,7 @@ import folium
 import os
 import time
 import selenium.webdriver
+import branca
 
 # Create filepaths within df directory
 srcpath = os.path.split(os.path.abspath(''))[0]
@@ -32,7 +33,10 @@ def make_maps(sourcepath, years=None):
         distance.reset_index(inplace = True, drop = True)
         distance.sort_values('CustomerState', inplace = True)
 
-        m = folium.Map(location=[48, -102], zoom_start=2.5)
+        m = folium.Map(location=[48, -102], tiles='cartodbpositron', zoom_start=3)
+        #m = folium.Map(location=[48, -102], tiles='Mapbox Bright', zoom_start=2.5)
+        colorscale = branca.colormap.linear.YlOrRd_09.scale(0, 50e3)
+
 
         folium.Choropleth(
             geo_data=state_geo,
@@ -40,10 +44,12 @@ def make_maps(sourcepath, years=None):
             data=distance,
             columns=['CustomerState', 'avg(DistanceTraveled)'],
             key_on='feature.id',
-            fill_color='YlGn',
+            fill_color='GnBu',
             fill_opacity=0.7,
             line_opacity=0.2,
-            legend_name='Distance Traveled (miles)'
+            nan_fill_opacity=0.0,
+            bins=[x for x in range(0, 4000, 500)],
+            legend_name=f'{year[:-4]} (distance in miles)'
         ).add_to(m)
 
         folium.LayerControl().add_to(m)
@@ -56,9 +62,7 @@ def make_images():
         list_years.extend(file)
     list_years.sort()    
     delay = 5
-    print(list_years)
     for year in list_years:
-        print('intheloop')
         tmpurl = f'file://{srcpath}/maps/maphtmls/CustomerState/{year}'
         print(tmpurl)
         browser = selenium.webdriver.Safari()

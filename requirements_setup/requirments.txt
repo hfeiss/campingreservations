@@ -50,6 +50,9 @@ python packages:
     selenium.webdriver
     time
     os
+    PIL
+
+Anaconda 3
 
 mkdir capstone
     aws2 s3 sync s3://recreationbucket .

@@ -5,7 +5,6 @@ import os
 srcpath = os.path.split(os.path.abspath(''))[0]
 rootpath = os.path.split(srcpath)[0]
 datapath = os.path.join(rootpath, 'data/')
-cleanpath = os.path.join(datapath, 'cleaned/')
 imagepath = os.path.join(rootpath, 'images/')
 
 def make_gif(sourcepath, years=None):
@@ -22,11 +21,12 @@ def make_gif(sourcepath, years=None):
         new_frame = Image.open(sourcepath + year)
         frames.append(new_frame)
     
-    frames[0].save('png_to_gif.gif', format='GIF',
+    frames[0].save(f'{imagepath}/CustomerState.gif',
+                    format='GIF',
                     append_images=frames[1:],
                     save_all=True,
-                    duration=300,
-                    loop=0)
+                    duration=600,
+                    loop=1)
 
 if __name__ == '__main__':
     make_gif(imagepath + 'maps/CustomerState/')
