@@ -13,8 +13,10 @@ cleanpath = os.path.join(datapath, 'cleaned/')
 imagepath = os.path.join(rootpath, 'images/')
 
 states = pd.read_csv('states.csv')
-url = 'https://raw.githubusercontent.com/python-visualization/folium/master/examples/data'
+url = 'https://raw.githubusercontent.com/'\
+      'python-visualization/folium/master/examples/data'
 state_geo = f'{url}/us-states.json'
+
 
 def make_maps(sourcepath, years=None):
     list_years = []
@@ -27,10 +29,12 @@ def make_maps(sourcepath, years=None):
     for year in list_years:
         distance = pd.read_pickle(sourcepath + year)
         distance = distance[distance['FacilityState'].isin(states['States'])]
-        distance.reset_index(inplace = True, drop = True)
-        distance.sort_values('FacilityState', inplace = True)
+        distance.reset_index(inplace=True, drop=True)
+        distance.sort_values('FacilityState', inplace=True)
 
-        m = folium.Map(location=[44, -115], tiles='cartodbpositron', zoom_start=3.6)
+        m = folium.Map(location=[44, -115],
+                       tiles='cartodbpositron',
+                       zoom_start=3.6)
 
         folium.Choropleth(
             geo_data=state_geo,
@@ -51,21 +55,26 @@ def make_maps(sourcepath, years=None):
         m.save(f'maphtmls/FacilityState/{str(year[:-4])}.html')
         print(f'Wrote {str(year[:-4])}.html')
 
+
 def make_images():
     list_years = []
     for root, dirs, file in os.walk('./maphtmls'):
         list_years.extend(file)
-    list_years.sort()    
+    list_years.sort()
+
     delay = 2
     for year in list_years:
-        tmpurl = f'file://{srcpath}/visualizations/maps/maphtmls/FacilityState/{year}'
+        tmpurl = f'file://{srcpath}/visualizations/'\
+                 f'maps/maphtmls/FacilityState/{year}'
         print(tmpurl)
         browser = selenium.webdriver.Safari()
         browser.set_window_size(1200, 800)
         browser.get(tmpurl)
         time.sleep(delay)
-        browser.save_screenshot(f'{imagepath}/maps/FacilityState/{str(year[:-5])}.png')
+        browser.save_screenshot(f'{imagepath}/maps/FacilityState/'
+                                f'{str(year[:-5])}.png')
         browser.quit()
+
 
 if __name__ == '__main__':
 
