@@ -2,9 +2,9 @@
 ![Granite Butte Lookout, Helena National Forest](/images/README/lookout.jpg)
  
  
-Established in 2003, recreation.gov manages over 3 million reservations every year. These reservations are for anything from permit lotteries to fire-tower rentals in US National Parks and US Forest Service lands.
+Established in 2003, recreation.gov manages over 3 million reservations every year for US National Parks and US Forest Service lands. These reservations are for anything from permit lotteries to fire-tower rentals.
  
-Every reservation made from 2006 through 2018 is available for public download via their API: about 10 gigabytes of .csv!
+Every reservation made from 2006 through 2018 is available for public download via the RIDB API: about 10 gigabytes of .csv!
  
 This repository explores factors that determine how far a customer is willing to travel to a campground, and how long they stay once there.
  
@@ -52,7 +52,7 @@ Interestingly,  `Marinaboat` has only one non-null value in all of the years. Fu
  
 Formatting within the columns is mostly consistent, but does require type casting, truncation, and removing impurities.
  
-For most quereis, 35% of the data is removed for either formating or nulls. For sorting by `FacilityZIP`, an unfortunate 60% is removed due to nulls, but at least 1 million rows remain in each year's data.
+For most quereis, 35% of the data is removed for either formating or nulls. For sorting by `FacilityZIP`, an unfortunate 60% is removed due to nulls, but typically at least 1 million rows remain in each year's data.
  
 # Conclusions
  
@@ -68,7 +68,7 @@ That being said, the statistical distribution of the *averages for each year* do
  
 These results are counterintuitive; it seems people travel longer the shorter the stay! A further complication is that driving 650 miles one way for "weekend warrior" trip is very unrealistic.
  
-Fundamentally, it seems this analysis is not accounting for how people actually camp. The premis that distance traveled to a facility is equal to the distance from the home address is evidently wrong. In reality, reservations are likely linked together on road trips longer than a weekend; where the distance actually traveled is much less than the distance all the way home.
+Fundamentally, this analysis is likely not accounting for how people actually camp. The premis that distance traveled to a facility is equal to the distance from the home address is evidently wrong. In reality, reservations are likely linked together on road trips longer than a weekend; where the distance actually traveled is much less than the distance all the way home.
  
 ![](/images/TypeOverTime.png)
  
@@ -82,7 +82,7 @@ As does the fact that, on average, reservations made from the North East, Florid
 ## Distance by Destination's State
 ![](/images/FacilityState.gif)
  
-Lastly, year after year, reservations are made from across the country to visit Alaska and Arizona (well... more likely the Grand Canyon).
+Lastly, year after year, reservations are made from across the world to visit Alaska and Arizona (well... more accurately the Grand Canyon).
  
 ![](/images/README/manko.jpg)
  
@@ -107,7 +107,7 @@ For first analysis, a histogram of the duration of stays is created. This histog
 One's intuition is likely correct here. Reservations are usually two nights: the length of a weekend. Counts rapidly decline until another steep drop between 7 and 8 nights: the length of a week. Finally, there's a small spike at 14 nights: the maximum length of stay at most facilities.
  
 ### Folium, selenium, and PIL
-Finally, folium is used to generate maps of the average distance between the `CustomerZIP` and the campground's location given either the `CustomerState` or the `FacilityState`. Selenium.webdriver is used to generate .png images from the interactive maps, and PIL converts them into .gif seen above.
+Folium is used to generate maps of the average distance between the `CustomerZIP` and the campground's location grouped by either the `CustomerState` or the `FacilityState`. Selenium.webdriver is used to generate .png images from folium's interactive maps, and PIL converts the .png files into a .gif as seen above.
  
 # Further Analysis
  
@@ -115,7 +115,7 @@ Finally, folium is used to generate maps of the average distance between the `Cu
 All years should be combined into one DataFrame for queries and statistical analysis. While partitioning by year is convenient, it eliminates the ability to perform true hypothesis testing.
  
 #### Distribute computation
-Spark is best utilized on a cluster of computers. This analysis only used one. Further analysis could distribute the computation, hopefully adding depth to any insights gleaned.
+Spark is best utilized on a cluster of computers. This analysis only used one node. Further analysis could distribute the computation, hopefully adding both depth and speed to the insights gleaned.
  
 #### More granular maps
 Cleaned Dataframes with distance traveled, grouped by customer and facility ZIP codes are also saved. More detailed mapping is feasible, and potentially insightful.
@@ -123,7 +123,7 @@ Cleaned Dataframes with distance traveled, grouped by customer and facility ZIP 
 #### Bins for distance traveled
 A histogram of distance traveled is more useful than the mean and standard deviation alone. While difficult to formulate in a pyspark.sql query, the results would be valuable.
  
-#### Track customer id
+#### Track `CustomerId`, not `ReservationId`
 One could prove / disprove the basis of the distance traveled calculation if tracking the last known reservation, by customer, is possible.
  
 # Footnotes
