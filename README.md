@@ -68,7 +68,7 @@ That being said, the statistical distribution of the *averages for each year* do
  
 These results are counterintuitive; it seems people travel longer the shorter the stay! A further complication is that driving 650 miles one way for "weekend warrior" trip is very unrealistic.
  
-Fundamentally, it seems this analysis is not accounting for how people actually camp. The basis that distance traveled to a facility is equal to the distance from the home address is evidently wrong. In reality, reservations are likely linked together on road trips and vacations longer than a weekend; where the distance traveled is from the previous night's reservation not the home.
+Fundamentally, it seems this analysis is not accounting for how people actually camp. The premis that distance traveled to a facility is equal to the distance from the home address is evidently wrong. In reality, reservations are likely linked together on road trips longer than a weekend; where the distance actually traveled is much less than the distance all the way home.
  
 ![](/images/TypeOverTime.png)
  
@@ -77,12 +77,12 @@ The large proportion of reservations made for RV's and other motorized transport
 ## Distance by Customer's State
 ![](/images/CustomerState.gif)
  
-As does the fact that, on average, reservations made from the North East, Florida (and Hawaii and Alaska), are for a distance of +1,000 miles: possibly longer roadtrips connecting multiple nights.
+As does the fact that, on average, reservations made from the North East, Florida (and Hawaii and Alaska) are for a distance of greater than 1,000 miles.
  
 ## Distance by Destination's State
 ![](/images/FacilityState.gif)
  
-Lastly, year after year, reservations are made from across the country to visit Alaska and Arizona (well... the Grand Canyon).
+Lastly, year after year, reservations are made from across the country to visit Alaska and Arizona (well... more likely the Grand Canyon).
  
 ![](/images/README/manko.jpg)
  
@@ -94,7 +94,7 @@ This project uses an Amazon Web Service's m5a.8xlarge EC2 instance. The instance
  
 Additionally, ZIP codes are converted into latitudes and longitudes, then the distance between the customer's home and the facility is calculated, adding a column for each step. The average computation time is 45 minutes per year's data.
  
-Lastly, the results are saved as .pickles in [data/cleaned](../data/cleaned) directories. The clean .pkl files are moved into AWS S3 storage, for backup / download.
+Lastly, the results are saved as .pickles in the [data/cleaned](../data/cleaned) directories. The clean .pkl files are moved into AWS S3 storage, for backup / download.
  
 ### Two Rounds of Cleaning
 The cleaned data are less than 10mb size: perfect for local analysis. The .pkl files are read into pandas DataFrames. States outside of the United States are removed, as are reservations with impossible durations due to date boundaries at the beginning of year's dates.
@@ -128,4 +128,3 @@ One could prove / disprove the basis of the distance traveled calculation if tra
  
 # Footnotes
 <a name="myfootnote1">1</a>: as calculated by the orthodromic distance between a reservation's `customerZIP` code to a facility's (`FacilityLatitude`, `FacilityLongitude`). As mentioned in the conclusions, this is likely an inaccurate measurement of the distance *actually* traveled.
-
