@@ -10,6 +10,6 @@ datapath = os.path.join(rootpath, 'data/')
 cleanpath = os.path.join(datapath, 'cleaned/')
 imagepath = os.path.join(rootpath, 'images/')
 
-pklchoice = 'DistanceByFacilityState/2007.pkl'
+pklchoice = 'DistanceByFacilityState/2016.pkl'
 df = pd.read_pickle(cleanpath + pklchoice)
 print(df)
