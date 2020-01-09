@@ -20,7 +20,9 @@ plt.figure(figsize=(12, 8))
 ax = plt.subplot(111)
 
 plt.xlim(150, 950)
-plt.xticks(range(200, 1000, 100), [str(x) + " Miles" for x in range(200, 1000, 100)], fontsize=14)
+plt.xticks(range(200, 1000, 100),
+           [str(x) + " Miles" for x in range(200, 1000, 100)],
+           fontsize=14)
 
 plt.ylim(-0.0005, .01)
 plt.yticks([])
@@ -33,7 +35,8 @@ ax.spines["left"].set_visible(False)
 plt.tick_params(axis="both", which="both", bottom="off", labelbottom="on")
 
 # plt.xlabel('Miles Traveled', fontsize = 14)
-plt.title('Probability of Average Distance for a Year', fontsize=20, loc='right')
+plt.title('Probability of Average Distance for a Year',
+          fontsize=20, loc='right')
 
 x = np.linspace(150, 950, 1000)
 
@@ -52,4 +55,5 @@ plt.tight_layout()
 
 if __name__ == '__main__':
     plt.savefig(imagepath + '/HypothesisTest.png')
-    print(f'P-value of observing this average: {weekend_dist.cdf(info.longer_avg):.3f}')
+    p_value = weekend_dist.cdf(info.longer_avg)
+    print(f'P-value of observing this average: {p_value:.3f}')
