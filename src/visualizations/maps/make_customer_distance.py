@@ -30,7 +30,7 @@ def make_maps(sourcepath, years=None):
         distance.reset_index(inplace = True, drop = True)
         distance.sort_values('CustomerState', inplace = True)
 
-        m = folium.Map(location=[48, -102], tiles='cartodbpositron', zoom_start=3)
+        m = folium.Map(location=[44, -115], tiles='cartodbpositron', zoom_start=3.6)
 
         folium.Choropleth(
             geo_data=state_geo,
@@ -56,11 +56,12 @@ def make_images():
     for root, dirs, file in os.walk('./maphtmls'):
         list_years.extend(file)
     list_years.sort()    
-    delay = 5
+    delay = 2
     for year in list_years:
         tmpurl = f'file://{srcpath}/visualizations/maps/maphtmls/CustomerState/{year}'
         print(tmpurl)
         browser = selenium.webdriver.Safari()
+        browser.set_window_size(1200, 800)
         browser.get(tmpurl)
         time.sleep(delay)
         browser.save_screenshot(f'{imagepath}/maps/CustomerState/{str(year[:-5])}.png')
@@ -68,5 +69,5 @@ def make_images():
 
 if __name__ == '__main__':
 
-    make_maps(cleanpath + 'DistanceByCustomerState/')
+    # make_maps(cleanpath + 'DistanceByCustomerState/')
     make_images()
