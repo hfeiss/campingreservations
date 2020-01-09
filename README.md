@@ -90,11 +90,11 @@ Lastly, year after year, reservations are made from across the country to visit 
 # Methods
  
 ### Big Data
-This project uses an Amazon Web Service's m5a.8xlarge EC2 instance. The instance runs and starts a docker pyspark container. The scripts in [src](../src) issue SQL queries into a SparkContext for cleaning.
+This project uses an Amazon Web Service's m5a.8xlarge EC2 instance. The instance runs and starts a docker pyspark container. The scripts in [src](./src) issue SQL queries into a SparkContext for cleaning.
  
 Additionally, ZIP codes are converted into latitudes and longitudes, then the distance between the customer's home and the facility is calculated, adding a column for each step. The average computation time is 45 minutes per year's data.
  
-Lastly, the results are saved as .pickles in the [data/cleaned](../data/cleaned) directories. The clean .pkl files are moved into AWS S3 storage, for backup / download.
+Lastly, the results are saved as .pickles in the [data/cleaned](./data/cleaned) directories. The clean .pkl files are moved into AWS S3 storage, for backup / download.
  
 ### Two Rounds of Cleaning
 The cleaned data are less than 10mb size: perfect for local analysis. The .pkl files are read into pandas DataFrames. States outside of the United States are removed, as are reservations with impossible durations due to date boundaries at the beginning of year's dates.
