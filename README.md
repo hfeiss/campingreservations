@@ -137,6 +137,6 @@ If tracking the last known reservation by customer is possible, one could prove 
 # Footnotes
 <a name="myfootnote1">1</a>: as calculated by the orthodromic distance between a reservation's `customerZIP` code to a facility's (`FacilityLatitude`, `FacilityLongitude`). As mentioned in the conclusions, this is likely an inaccurate measurement of the distance *actually* traveled.
 
-<a>[Back to Conclusions](#backtoconclusions)</a>
+<sup>[Back to Conclusions](#backtoconclusions)</sup>
 
 <a name="myfootnote2">2</a>: and Hawaii and Alaska, which could be excluded as outliers.
