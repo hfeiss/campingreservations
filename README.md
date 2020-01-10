@@ -66,8 +66,8 @@ For most queries, 35% of the data is removed for either formating or nulls. For 
 
 ## Distance Traveled vs. Number of Nights
  
-This analysis found no direct correlation between the average distance traveled<sup>[1](#myfootnote1)</sup> and number of nights one stays at a facility. In almost every year, the standard deviation of the averages is greater than the mean itself<a name="backtoconclusion"></a>.
- 
+This analysis found no direct correlation between the average distance traveled<sup>[1](#myfootnote1)</sup> and number of nights one stays at a facility. In almost every year, the standard deviation of the averages is greater than the mean itself.
+
 The power of this test is reduced by reservations made to/from Alaska and Hawaii where the distances are inherently larger than other states. Computation time did not allow for excluding these states as outliers.
  
 ![](/images/hypothesistest.png)
@@ -137,6 +137,8 @@ If tracking the last known reservation by customer is possible, one could prove 
 # Footnotes
 <a name="myfootnote1">1</a>: as calculated by the orthodromic distance between a reservation's `customerZIP` code to a facility's (`FacilityLatitude`, `FacilityLongitude`). As mentioned in the conclusions, this is likely an inaccurate measurement of the distance *actually* traveled.
 
-<sup>[Back to Conclusions](#backtoconclusions)</sup>
+[Back to Conclusions](#Conclusions)
 
 <a name="myfootnote2">2</a>: and Hawaii and Alaska, which could be excluded as outliers.
+
+[Back to Maps](#Distance-by-Customer's-State)
