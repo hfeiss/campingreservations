@@ -94,7 +94,7 @@ This project uses an Amazon Web Service's m5a.8xlarge EC2 instance. The instance
  
 Additionally, ZIP codes are converted into latitudes and longitudes, then the distance between the customer's home and the facility is calculated, adding a column for each step. The average computation time is 45 minutes per year's data.
  
-Lastly, the results are saved as .pickles in the [data/cleaned](./data/cleaned) directories. The clean .pkl files are moved into AWS S3 storage, for backup / download.
+Lastly, the results are saved as .pickles in the [data/cleaned](./data/cleaned) directories. The clean .pkl files are moved into AWS S3 storage, for backup / download with the [S3 Scripts.](./src/S3)
  
 ### Two Rounds of Cleaning
 The cleaned data are less than 10mb size: perfect for local analysis. The .pkl files are read into pandas DataFrames. Locations outside of the United States are removed, as are reservations with impossible durations due to date boundaries at the beginning of year's dates.
@@ -118,7 +118,7 @@ All years should be combined into one DataFrame for queries and statistical anal
 Spark is best utilized on a cluster of computers. This analysis only used one node. Further analysis could distribute the computation, hopefully adding both depth and speed to the insights gleaned.
  
 #### More granular maps
-Cleaned Dataframes with distance traveled, grouped by customer and facility ZIP codes, are also saved. More detailed mapping is feasible and potentially insightful.
+Cleaned Dataframes with distance traveled, grouped by customer and facility ZIP codes, are also saved. More detailed mapping is feasible and potentially illuminating.
  
 #### Bins for distance traveled
 A histogram of distance traveled is more useful than the mean and standard deviation alone. While difficult to formulate in a pyspark.sql query, the results would be valuable.
