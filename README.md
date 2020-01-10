@@ -1,4 +1,5 @@
 # Goal
+
 ![Granite Butte Lookout, Helena National Forest](/images/README/lookout.jpg)
  
  
@@ -9,6 +10,7 @@ Every reservation made from 2006 through 2018 is available for public download v
 This repository explores how far a customer is willing to travel to a campground and how long they stay once there.
  
 # Rawdata
+
 ![](/images/README/ridb.png)
  
 The reservation data is provided as a seperate .csv for every year. Each year has 57 columns, 22 of which are (mostly) one-hot encoded category types. This analysis included:
@@ -62,40 +64,10 @@ Formatting within the columns is mostly consistent, but does require type castin
 
 For most queries, 35% of the data is removed for either formating or nulls. For sorting by `FacilityZIP`, an unfortunate 60% is removed due to nulls, but typically at least 1 million rows remain in each year's data.
  
-# Conclusions
+ 
 
-## Distance Traveled vs. Number of Nights
- 
-This analysis found no direct correlation between the average distance traveled<sup>[1](#myfootnote1)</sup> and number of nights one stays at a facility. In almost every year, the standard deviation of the averages is greater than the mean itself.
 
-The power of this test is reduced by reservations made to/from Alaska and Hawaii where the distances are inherently larger than other states. Computation time did not allow for excluding these states as outliers.
- 
-![](/images/hypothesistest.png)
- 
-That being said, the statistical distribution of the *averages for each year* do appear to differ with a pseudo p value of = 0.016
- 
-These results are counterintuitive; it seems people travel longer the shorter the stay. A further complication is that driving 650 miles one way for "weekend warrior" trip is very unrealistic.
- 
-Fundamentally, this analysis is likely not accounting for how people actually camp. The premis that distance traveled to a facility is equal to the distance from the home address is evidently wrong. In reality, it is possible that reservations are linked together on road trips longer than a weekend, where the distance actually traveled is much less than the distance all the way home.
- 
-![](/images/TypeOverTime.png)
- 
-The large proportion of reservations made for RV's and other motorized transport adds evidence to this notion.
 
-## Maps
-#### Distance by Customer's State
-![](/images/CustomerState.gif)
- 
-As does the fact that, on average, reservations made from the North East and Florida<sup>[2](#myfootnote2)</sup> are for a distance of greater than 1,000 miles.
- 
-#### Distance by Destination's State
-![](/images/FacilityState.gif)
- 
-Lastly, year after year, reservations are made from across the world to visit Alaska and Arizona (or more accurately, the Grand Canyon).
- 
-![](/images/README/manko.jpg)
- 
- 
 # Methods
  
 ### Big Data
@@ -118,6 +90,50 @@ One's intuition is likely correct here. Reservations are usually two nights: the
 ### Folium, selenium, and PIL
 Folium is used to generate maps of the average distance between the `CustomerZIP` and the campground's location grouped by either the `CustomerState` or the `FacilityState`. Selenium.webdriver is used to generate .png images from folium's interactive maps, and PIL converts the .png files into a .gif as seen above.
  
+
+
+
+
+# Conclusions
+
+## Distance Traveled vs. Number of Nights
+ 
+This analysis found no direct correlation between the average distance traveled<sup>[1](#myfootnote1)</sup> and number of nights one stays at a facility. In almost every year, the standard deviation of the averages is greater than the mean itself.
+
+The power of this test is reduced by reservations made to/from Alaska and Hawaii where the distances are inherently larger than other states. Computation time did not allow for excluding these states as outliers.
+ 
+![](/images/hypothesistest.png)
+ 
+That being said, the statistical distribution of the *averages for each year* do appear to differ with a pseudo p value of = 0.016
+ 
+These results are counterintuitive; it seems people travel longer the shorter the stay. A further complication is that driving 650 miles one way for "weekend warrior" trip is very unrealistic.
+ 
+Fundamentally, this analysis is likely not accounting for how people actually camp. The premis that distance traveled to a facility is equal to the distance from the home address is evidently wrong. In reality, it is possible that reservations are linked together on road trips longer than a weekend, where the distance actually traveled is much less than the distance all the way home.
+ 
+The large proportion of reservations made for RV's and other motorized transport adds evidence to this notion.
+
+![](/images/TypeOverTime.png)
+ 
+## Maps
+
+#### Distance by Customer's State
+As does the fact that, on average, reservations made from the North East and Florida<sup>[2](#myfootnote2)</sup> are for a distance of greater than 1,000 miles. The .gif below shows the average reservation distance grouped by customer state: the distance someone travels based on where they live.
+
+![](/images/CustomerState.gif)
+
+#### Distance by Destination's State
+Lastly, the .gif below shows the average reservation's distance, grouped by the facility's state: how far one is willing to travel to a state given the camping oportuniteis there.
+![](/images/FacilityState.gif)
+ 
+Year after year, reservations are made from across the world to visit Alaska and Arizona (or more accurately, the Grand Canyon).
+ 
+![](/images/README/manko.jpg)
+ 
+
+
+
+
+
 # Further Analysis
  
 #### Combine all Years
