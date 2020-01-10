@@ -26,7 +26,7 @@ def make_gif(sourcepath, folder, years=None):
                    format='GIF',
                    append_images=frames[1:],
                    save_all=True,
-                   duration=1000,
+                   duration=1200,
                    loop=0)
 
 
