@@ -77,7 +77,7 @@ Additionally, ZIP codes are converted into latitudes and longitudes, then the di
 
 Lastly, the results are saved as .pickles in the [data/cleaned](./data/cleaned) directories. The clean .pkl files are moved into AWS S3 storage, for backup / download with the [S3 scripts.](./src/S3)
 
-All scripts are built to run on every file in a specified directory. Adding future years to the analysis is done by simply adding a .csv in the [raw folder](./data/raw/reservations_rec_gov/), and running all necessary srcripts.
+All scripts are built to run on every file in a specified directory. Adding future years to the analysis is done by simply adding a .csv in the raw folder, and running all necessary srcripts.
 
 ### Two Rounds of Cleaning
 The cleaned data are less than 10mb size: perfect for local analysis. The .pkl files are read into pandas DataFrames. Before plotting, locations outside of the United States are removed, as are reservations with impossible durations due to date boundaries at the beginning of year's dates.
