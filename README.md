@@ -81,13 +81,14 @@ Fundamentally, this analysis is likely not accounting for how people actually ca
 ![](/images/TypeOverTime.png)
  
 The large proportion of reservations made for RV's and other motorized transport adds evidence to this notion.
- 
-## Distance by Customer's State
+
+## Maps
+#### Distance by Customer's State
 ![](/images/CustomerState.gif)
  
 As does the fact that, on average, reservations made from the North East and Florida<sup>[2](#myfootnote2)</sup> are for a distance of greater than 1,000 miles.
  
-## Distance by Destination's State
+#### Distance by Destination's State
 ![](/images/FacilityState.gif)
  
 Lastly, year after year, reservations are made from across the world to visit Alaska and Arizona (or more accurately, the Grand Canyon).
@@ -141,4 +142,4 @@ If tracking the last known reservation by customer is possible, one could prove 
 
 <a name="myfootnote2">2</a>: and Hawaii and Alaska, which could be excluded as outliers.
 
-[Back to Maps](#Distance-by-Customer's-State)
+[Back to Maps](#Maps)
