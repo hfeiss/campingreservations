@@ -2,11 +2,11 @@
 ![Granite Butte Lookout, Helena National Forest](/images/README/lookout.jpg)
  
  
-Established in 2003, recreation.gov manages over 3 million reservations every year for US National Parks and US Forest Service lands. These reservations range from from permit lotteries to fire-tower rentals.
+Established in 2003, recreation.gov manages over 3 million reservations every year for US National Parks and US Forest Service lands. These reservations range from permit lotteries to firetower rentals.
  
 Every reservation made from 2006 through 2018 is available for public download via the RIDB API: about 10 gigabytes of data.
  
-This repository explores how far a customer is willing to travel to a campground, and how long they stay once there.
+This repository explores how far a customer is willing to travel to a campground and how long they stay once there.
  
 # Rawdata
 ![](/images/README/ridb.png)
@@ -58,7 +58,7 @@ For most queries, 35% of the data is removed for either formating or nulls. For 
  
 ## Distance Traveled vs. Number of Nights
  
-This analysis found no direct correlation between the average distance traveled<sup>[1](#myfootnote1)</sup> , and number of nights one stays at a facility. In almost every year, the standard deviation of the averages is greater than the mean itself.
+This analysis found no direct correlation between the average distance traveled<sup>[1](#myfootnote1)</sup> and number of nights one stays at a facility. In almost every year, the standard deviation of the averages is greater than the mean itself.
  
 The power of this test is reduced by reservations made to/from Alaska and Hawaii where the distances are inherently larger than other states. Computation time did not allow for excluding these states as outliers.
  
@@ -66,9 +66,9 @@ The power of this test is reduced by reservations made to/from Alaska and Hawaii
  
 That being said, the statistical distribution of the *averages for each year* do appear to differ with a pseudo p value of = 0.016
  
-These results are counterintuitive; it seems people travel longer the shorter the stay! A further complication is that driving 650 miles one way for "weekend warrior" trip is very unrealistic.
+These results are counterintuitive; it seems people travel longer the shorter the stay. A further complication is that driving 650 miles one way for "weekend warrior" trip is very unrealistic.
  
-Fundamentally, this analysis is likely not accounting for how people actually camp. The premis that distance traveled to a facility is equal to the distance from the home address is evidently wrong. In reality, reservations are likely linked together on road trips longer than a weekend; where the distance actually traveled is much less than the distance all the way home.
+Fundamentally, this analysis is likely not accounting for how people actually camp. The premis that distance traveled to a facility is equal to the distance from the home address is evidently wrong. In reality, it is possible that reservations are linked together on road trips longer than a weekend, where the distance actually traveled is much less than the distance all the way home.
  
 ![](/images/TypeOverTime.png)
  
@@ -77,12 +77,12 @@ The large proportion of reservations made for RV's and other motorized transport
 ## Distance by Customer's State
 ![](/images/CustomerState.gif)
  
-As does the fact that, on average, reservations made from the North East, Florida (and Hawaii and Alaska) are for a distance of greater than 1,000 miles.
+As does the fact that, on average, reservations made from the North East and Florida<sup>[2](#myfootnote2)</sup> are for a distance of greater than 1,000 miles.
  
 ## Distance by Destination's State
 ![](/images/FacilityState.gif)
  
-Lastly, year after year, reservations are made from across the world to visit Alaska and Arizona (well... more accurately the Grand Canyon).
+Lastly, year after year, reservations are made from across the world to visit Alaska and Arizona (or more accurately, the Grand Canyon).
  
 ![](/images/README/manko.jpg)
  
@@ -124,7 +124,9 @@ Cleaned Dataframes with distance traveled, grouped by customer and facility ZIP 
 A histogram of distance traveled is more useful than the mean and standard deviation alone. While difficult to formulate in a pyspark.sql query, the results would be valuable.
  
 #### Track `CustomerId`, not `ReservationId`
-One could prove / disprove the basis of the distance traveled calculation if tracking the last known reservation, by customer, is possible.
+If tracking the last known reservation by customer is possible, one could prove / disprove the basis of the distance traveled calculation.
  
 # Footnotes
 <a name="myfootnote1">1</a>: as calculated by the orthodromic distance between a reservation's `customerZIP` code to a facility's (`FacilityLatitude`, `FacilityLongitude`). As mentioned in the conclusions, this is likely an inaccurate measurement of the distance *actually* traveled.
+
+<a name="myfootnote2">2</a>: and Hawaii and Alaska, which could be excluded as outliers.
