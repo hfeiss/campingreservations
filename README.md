@@ -102,10 +102,10 @@ This analysis found no direct correlation between the average distance traveled<
 
 The power of this test is reduced by reservations made to/from Alaska and Hawaii where the distances are inherently larger than other states. Computation time did not allow for excluding these states as outliers.
  
-![](/images/hypothesistest.png)
- 
 That being said, the statistical distribution of the *averages for each year* do appear to differ with a pseudo p value of = 0.016
- 
+
+![](/images/hypothesistest.png)
+  
 These results are counterintuitive; it seems people travel longer the shorter the stay. A further complication is that driving 650 miles one way for "weekend warrior" trip is very unrealistic.
  
 Fundamentally, this analysis is likely not accounting for how people actually camp. The premis that distance traveled to a facility is equal to the distance from the home address is evidently wrong. In reality, it is possible that reservations are linked together on road trips longer than a weekend, where the distance actually traveled is much less than the distance all the way home.
@@ -117,20 +117,19 @@ The large proportion of reservations made for RV's and other motorized transport
 ## Maps
 
 #### Distance by Customer's State
-As does the fact that, on average, reservations made from the North East and Florida<sup>[2](#myfootnote2)</sup> are for a distance of greater than 1,000 miles. The .gif below shows the average reservation distance grouped by customer state: the distance someone travels based on where they live.
+Furthermore, on average, reservations made from the North East and Florida<sup>[2](#myfootnote2)</sup> are for a distance of greater than 1,000 miles. The .gif below shows the average reservation distance grouped by customer state: the distance someone travels based on where they live.
 
 ![](/images/CustomerState.gif)
 
 #### Distance by Destination's State
-Lastly, the .gif below shows the average reservation's distance, grouped by the facility's state: how far one is willing to travel to a state given the camping oportuniteis there.
+Lastly, the .gif below shows the average reservation's distance, grouped by the facility's state: how far one is willing to travel to a state given the camping oportunities in that state.
+
 ![](/images/FacilityState.gif)
  
 Year after year, reservations are made from across the world to visit Alaska and Arizona (or more accurately, the Grand Canyon).
  
 ![](/images/README/manko.jpg)
  
-
-
 
 
 
@@ -151,6 +150,11 @@ A histogram of distance traveled is more useful than the mean and standard devia
 #### Track `CustomerId`, not `ReservationId`
 If tracking the last known reservation by customer is possible, one could prove / disprove the basis of the distance traveled calculation.
  
+
+
+
+
+
 # Footnotes
 <a name="myfootnote1">1</a>: as calculated by the orthodromic distance between a reservation's `customerZIP` code to a facility's (`FacilityLatitude`, `FacilityLongitude`). As mentioned in the conclusions, this is likely an inaccurate measurement of the distance *actually* traveled.
 
