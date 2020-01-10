@@ -30,7 +30,7 @@ docker install on EC2:
 
     reboot
 
-    docker build 7f1b57e85dc5
+    docker run --name sparkbook -p 8881:8888 -v "$PWD":/home/jovyan/work jupyter/pyspark-notebook start.sh jupyter lab --LabApp.token=''
 
 AWS CLI install on EC2:
     docker exec -it -u 0 sparkbook bash
