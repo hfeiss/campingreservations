@@ -44,14 +44,22 @@ In addition to the reservations, relational databases of campground information 
  
 # Exploratory Analysis
  
-EDA reveals relatively messy data. Of the 29,055,989 reservations, 12 columns have data in less than 1% of the rows.
- 
-Interestingly,  `Marinaboat` has only one non-null value in all of the years. Further, that one non-null is not boolean: `e6100000 010c5bb0...`, and it is doubtful that someone parked their boat 5 miles inland at [Haleakala National Park's sunrise hike:](https://www.recreation.gov/ticket/facility/253731)
+EDA reveals relatively messy data. Of the 29,055,989 reservations, 12 columns have data in less than 1% of the rows. Many usefull columns are 60% null.
+
+![](/images/README/nulls.png)
+
+Interestingly,  `Marinaboat` has only one non-null value in all of the years. Further, that one non-null is not boolean:
+
+![](/images/README/marinaboat.png)
+
+Also, it is doubtful that someone parked their boat 5 miles inland at [Haleakala National Park's sunrise hike:](https://www.recreation.gov/ticket/facility/253731)
  
 ![](/images/README/marinaboat.jpg)
  
 Formatting within the columns is mostly consistent, but does require type casting, truncation, and removing impurities.
  
+![](/images/README/baddata.png)
+
 For most queries, 35% of the data is removed for either formating or nulls. For sorting by `FacilityZIP`, an unfortunate 60% is removed due to nulls, but typically at least 1 million rows remain in each year's data.
  
 # Conclusions
