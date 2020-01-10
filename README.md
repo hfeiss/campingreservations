@@ -2,11 +2,11 @@
 ![Granite Butte Lookout, Helena National Forest](/images/README/lookout.jpg)
  
  
-Established in 2003, recreation.gov manages over 3 million reservations every year for US National Parks and US Forest Service lands. These reservations are for anything from permit lotteries to fire-tower rentals.
+Established in 2003, recreation.gov manages over 3 million reservations every year for US National Parks and US Forest Service lands. These reservations range from from permit lotteries to fire-tower rentals.
  
-Every reservation made from 2006 through 2018 is available for public download via the RIDB API: about 10 gigabytes of .csv!
+Every reservation made from 2006 through 2018 is available for public download via the RIDB API: about 10 gigabytes of data.
  
-This repository explores factors that determine how far a customer is willing to travel to a campground, and how long they stay once there.
+This repository explores how far a customer is willing to travel to a campground, and how long they stay once there.
  
 # Rawdata
 ![](/images/README/ridb.png)
@@ -52,7 +52,7 @@ Interestingly,  `Marinaboat` has only one non-null value in all of the years. Fu
  
 Formatting within the columns is mostly consistent, but does require type casting, truncation, and removing impurities.
  
-For most quereis, 35% of the data is removed for either formating or nulls. For sorting by `FacilityZIP`, an unfortunate 60% is removed due to nulls, but typically at least 1 million rows remain in each year's data.
+For most queries, 35% of the data is removed for either formating or nulls. For sorting by `FacilityZIP`, an unfortunate 60% is removed due to nulls, but typically at least 1 million rows remain in each year's data.
  
 # Conclusions
  
@@ -97,7 +97,7 @@ Additionally, ZIP codes are converted into latitudes and longitudes, then the di
 Lastly, the results are saved as .pickles in the [data/cleaned](./data/cleaned) directories. The clean .pkl files are moved into AWS S3 storage, for backup / download.
  
 ### Two Rounds of Cleaning
-The cleaned data are less than 10mb size: perfect for local analysis. The .pkl files are read into pandas DataFrames. States outside of the United States are removed, as are reservations with impossible durations due to date boundaries at the beginning of year's dates.
+The cleaned data are less than 10mb size: perfect for local analysis. The .pkl files are read into pandas DataFrames. Locations outside of the United States are removed, as are reservations with impossible durations due to date boundaries at the beginning of year's dates.
  
 ### Matplotlib
 For first analysis, a histogram of the duration of stays is created. This histogram is used to decide the two `LengthOfStay` bins: weekend trips and trips longer than two nights; roughly half of the reservations belong in each category.
@@ -118,7 +118,7 @@ All years should be combined into one DataFrame for queries and statistical anal
 Spark is best utilized on a cluster of computers. This analysis only used one node. Further analysis could distribute the computation, hopefully adding both depth and speed to the insights gleaned.
  
 #### More granular maps
-Cleaned Dataframes with distance traveled, grouped by customer and facility ZIP codes are also saved. More detailed mapping is feasible, and potentially insightful.
+Cleaned Dataframes with distance traveled, grouped by customer and facility ZIP codes, are also saved. More detailed mapping is feasible and potentially insightful.
  
 #### Bins for distance traveled
 A histogram of distance traveled is more useful than the mean and standard deviation alone. While difficult to formulate in a pyspark.sql query, the results would be valuable.
