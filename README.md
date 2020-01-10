@@ -63,7 +63,7 @@ Formatting within the columns is mostly consistent, but does require type castin
 For most queries, 35% of the data is removed for either formating or nulls. For sorting by `FacilityZIP`, an unfortunate 60% is removed due to nulls, but typically at least 1 million rows remain in each year's data.
  
 # Conclusions
- 
+<a name="backtoconclusion"></a>
 ## Distance Traveled vs. Number of Nights
  
 This analysis found no direct correlation between the average distance traveled<sup>[1](#myfootnote1)</sup> and number of nights one stays at a facility. In almost every year, the standard deviation of the averages is greater than the mean itself.
@@ -123,10 +123,10 @@ Folium is used to generate maps of the average distance between the `CustomerZIP
 All years should be combined into one DataFrame for queries and statistical analysis. While partitioning by year is convenient, it eliminates the ability to perform true hypothesis testing.
  
 #### Distribute computation
-Spark is best utilized on a cluster of computers. This analysis only used one node. Further analysis could distribute the computation, hopefully adding both depth and speed to the insights gleaned.
+Spark is best utilized on a cluster of computers. This analysis only uses one node. Further analysis could distribute the computation, hopefully adding both depth and speed to the insights gleaned.
  
 #### More granular maps
-Cleaned Dataframes with distance traveled, grouped by customer and facility ZIP codes, are also saved. More detailed mapping is feasible and potentially illuminating.
+Cleaned Dataframes with distance traveled, grouped by customer and facility ZIP codes, are also saved. More detailed mapping is feasible and potentially illuminating. Maps for average length of stay per region could also be produced.
  
 #### Bins for distance traveled
 A histogram of distance traveled is more useful than the mean and standard deviation alone. While difficult to formulate in a pyspark.sql query, the results would be valuable.
@@ -136,5 +136,7 @@ If tracking the last known reservation by customer is possible, one could prove 
  
 # Footnotes
 <a name="myfootnote1">1</a>: as calculated by the orthodromic distance between a reservation's `customerZIP` code to a facility's (`FacilityLatitude`, `FacilityLongitude`). As mentioned in the conclusions, this is likely an inaccurate measurement of the distance *actually* traveled.
+
+<a>[Back to Conclusions](#backtoconclusions)</a>
 
 <a name="myfootnote2">2</a>: and Hawaii and Alaska, which could be excluded as outliers.
