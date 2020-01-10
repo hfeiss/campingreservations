@@ -2,7 +2,7 @@
 ![Granite Butte Lookout, Helena National Forest](/images/README/lookout.jpg)
  
  
-Established in 2003, recreation.gov manages over 3 million reservations every year for US National Parks and US Forest Service lands. These reservations range from permit lotteries to firetower rentals.
+Established in 2003, [recreation.gov](https://www.recreation.gov) manages over 3 million reservations every year for US National Parks and US Forest Service lands. These reservations range from permit lotteries to firetower rentals.
  
 Every reservation made from 2006 through 2018 is available for public download via the RIDB API: about 10 gigabytes of data.
  
@@ -103,10 +103,10 @@ This project uses an Amazon Web Service's m5a.8xlarge EC2 instance. The instance
  
 Additionally, ZIP codes are converted into latitudes and longitudes, then the distance between the customer's home and the facility is calculated, adding a column for each step. The average computation time is 45 minutes per year's data.
  
-Lastly, the results are saved as .pickles in the [data/cleaned](./data/cleaned) directories. The clean .pkl files are moved into AWS S3 storage, for backup / download with the [S3 Scripts.](./src/S3)
+Lastly, the results are saved as .pickles in the [data/cleaned](./data/cleaned) directories. The clean .pkl files are moved into AWS S3 storage, for backup / download with the [S3 scripts.](./src/S3)
  
 ### Two Rounds of Cleaning
-The cleaned data are less than 10mb size: perfect for local analysis. The .pkl files are read into pandas DataFrames. Locations outside of the United States are removed, as are reservations with impossible durations due to date boundaries at the beginning of year's dates.
+The cleaned data are less than 10mb size: perfect for local analysis. The .pkl files are read into pandas DataFrames. Before plotting, locations outside of the United States are removed, as are reservations with impossible durations due to date boundaries at the beginning of year's dates.
  
 ### Matplotlib
 For first analysis, a histogram of the duration of stays is created. This histogram is used to decide the two `LengthOfStay` bins: weekend trips and trips longer than two nights; roughly half of the reservations belong in each category.
