@@ -63,10 +63,10 @@ Formatting within the columns is mostly consistent, but does require type castin
 For most queries, 35% of the data is removed for either formating or nulls. For sorting by `FacilityZIP`, an unfortunate 60% is removed due to nulls, but typically at least 1 million rows remain in each year's data.
  
 # Conclusions
-<a name="backtoconclusion"></a>
+
 ## Distance Traveled vs. Number of Nights
  
-This analysis found no direct correlation between the average distance traveled<sup>[1](#myfootnote1)</sup> and number of nights one stays at a facility. In almost every year, the standard deviation of the averages is greater than the mean itself.
+This analysis found no direct correlation between the average distance traveled<sup>[1](#myfootnote1)</sup> and number of nights one stays at a facility. In almost every year, the standard deviation of the averages is greater than the mean itself<a name="backtoconclusion">.</a>
  
 The power of this test is reduced by reservations made to/from Alaska and Hawaii where the distances are inherently larger than other states. Computation time did not allow for excluding these states as outliers.
  
