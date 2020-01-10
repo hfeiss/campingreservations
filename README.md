@@ -140,14 +140,14 @@ Year after year, reservations are made from across the world to visit Alaska and
 #### Combine all Years
 All years should be combined into one DataFrame for queries and statistical analysis. While partitioning by year is convenient, it eliminates the ability to perform true hypothesis testing.
  
+#### Histograms
+A histogram of distance traveled is more useful than the mean and standard deviation alone. While difficult to formulate in a pyspark.sql query, histograms are more appropriate than statistical distributions in this analysis.
+
 #### Distribute computation
 Spark is best utilized on a cluster of computers. This analysis only uses one node. Further analysis could distribute the computation, hopefully adding both depth and speed to the insights gleaned.
  
 #### More granular maps
-Cleaned Dataframes with distance traveled, grouped by customer and facility ZIP codes, are also saved. More detailed mapping is feasible and potentially illuminating. Maps for average length of stay per region could also be produced.
- 
-#### Bins for distance traveled
-A histogram of distance traveled is more useful than the mean and standard deviation alone. While difficult to formulate in a pyspark.sql query, the results would be valuable.
+Cleaned DataFrame .pkl files with distance traveled, grouped by customer and facility ZIP codes, are also saved. More detailed mapping is feasible and potentially illuminating. Maps for average length of stay per region could also be produced.
  
 #### Track `CustomerId`, not `ReservationId`
 If tracking the last known reservation by customer is possible, one could prove / disprove the basis of the distance traveled calculation.
