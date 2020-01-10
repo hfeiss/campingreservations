@@ -79,6 +79,8 @@ Lastly, the results are saved as .pickles in the [data/cleaned](./data/cleaned) 
  
 ### Two Rounds of Cleaning
 The cleaned data are less than 10mb size: perfect for local analysis. The .pkl files are read into pandas DataFrames. Before plotting, locations outside of the United States are removed, as are reservations with impossible durations due to date boundaries at the beginning of year's dates.
+
+All scripts are built to run on every file in a specified directory. Adding future years to the analysis is done by simply adding a .csv in the raw folder, and running the scripts in [src](./src).
  
 ### Matplotlib
 For first analysis, a histogram of the duration of stays is created. This histogram is used to decide the two `LengthOfStay` bins: weekend trips and trips longer than two nights; roughly half of the reservations belong in each category.
