@@ -1,6 +1,5 @@
 from functools import reduce
 
-
 def combine(*dfs):
     # combines all dataframes
     # returns new spark dataframe
