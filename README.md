@@ -74,13 +74,13 @@ For most queries, 35% of the data is removed for either formating or nulls. For 
 This project uses an Amazon Web Service's m5a.8xlarge EC2 instance. The instance runs and starts a docker pyspark container. The scripts in [src](./src) issue SQL queries into a SparkContext for cleaning.
  
 Additionally, ZIP codes are converted into latitudes and longitudes, then the distance between the customer's home and the facility is calculated, adding a column for each step. The average computation time is 45 minutes per year's data.
- 
+
 Lastly, the results are saved as .pickles in the [data/cleaned](./data/cleaned) directories. The clean .pkl files are moved into AWS S3 storage, for backup / download with the [S3 scripts.](./src/S3)
- 
+
+All scripts are built to run on every file in a specified directory. Adding future years to the analysis is done by simply adding a .csv in the raw folder, and running all srcripts.
+
 ### Two Rounds of Cleaning
 The cleaned data are less than 10mb size: perfect for local analysis. The .pkl files are read into pandas DataFrames. Before plotting, locations outside of the United States are removed, as are reservations with impossible durations due to date boundaries at the beginning of year's dates.
-
-All scripts are built to run on every file in a specified directory. Adding future years to the analysis is done by simply adding a .csv in the raw folder, and running the scripts in [src](./src).
  
 ### Matplotlib
 For first analysis, a histogram of the duration of stays is created. This histogram is used to decide the two `LengthOfStay` bins: weekend trips and trips longer than two nights; roughly half of the reservations belong in each category.
