@@ -3,7 +3,7 @@
 ![Granite Butte Lookout, Helena National Forest](/images/README/lookout.jpg)
  
  
-Established in 2003, [recreation.gov](https://www.recreation.gov) manages over 3 million reservations every year for US National Parks and US Forest Service lands. These reservations range from permit lotteries to firetower rentals.
+Established in 2003, [recreation.gov](https://www.recreation.gov) manages over 3 million reservations every year for US public lands such as National Parks, Forest Service Campgrounds, and BLM. These reservations range from permit lotteries to firetower rentals.
  
 Every reservation made from 2006 through 2018 is available for public download via the RIDB API: about 10 gigabytes of data.
  
