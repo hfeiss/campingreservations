@@ -11,7 +11,7 @@ This repository explores how far a customer is willing to travel to a campground
  
 # Rawdata
 
-[![](/images/README/ridb.png)](https://ridb.recreation.gov)
+[![](/images/README/ridb.png)](https://ridb.recreation.gov/download)
  
 The reservation data is provided as a seperate .csv for every year. Each year has 57 columns, 22 of which are (mostly) one-hot encoded category types. This analysis included:
  
