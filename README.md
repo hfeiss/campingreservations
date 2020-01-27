@@ -5,13 +5,13 @@
  
 Established in 2003, [recreation.gov](https://www.recreation.gov) manages over 3 million reservations every year for US public lands such as National Parks, Forest Service Campgrounds, and BLM. These reservations range from permit lotteries to firetower rentals.
  
-Every reservation made from 2006 through 2018 is available for public download via the RIDB API: about 10 gigabytes of data.
+Every reservation made from 2006 through 2018 is [available for public download via the RIDB API](https://ridb.recreation.gov): about 10 gigabytes of data.
  
 This repository explores how far a customer is willing to travel to a campground and how long they stay once there.
  
 # Rawdata
 
-![](/images/README/ridb.png)
+[![](/images/README/ridb.png)](https://ridb.recreation.gov)
  
 The reservation data is provided as a seperate .csv for every year. Each year has 57 columns, 22 of which are (mostly) one-hot encoded category types. This analysis included:
  
